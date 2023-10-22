@@ -1,0 +1,105 @@
+Question 1: Write a database trigger on Library table. The System should keep track of the
+ records that are being updated or deleted. The old value of updated or deleted records
+ should be added in Library_Audit table.
+ INPUT:
+ a) Trigger:
+ CREATE ORREPLACETRIGGERLIBRARY_TRIGG
+ BEFORE DELETE ORUPDATEONLIBRARY
+ FOREACHROW
+ BEGIN
+ INSERT INTO LIBRARY_AUDIT VALUES(:old.bookid, :old.bookname, :old.author);
+ END;
+ b) Unnamed Block statements:
+ Update library set bookname='Six Sons' where bookid=99;
+ Delete from library where bookid=39;
+ OUTPUT:
+ After Table:
+ Before Table:
+ Audit Table:
+
+
+
+Question 2: Write a update, delete trigger on clientmstr table. The System should keep
+ track of the records that ARE BEING updated or deleted. The old value of updated or
+ deleted records should be added in audit_trade table. (Separate implementation using both
+ row and statement triggers)
+ INPUT:–for statement trigger
+ CREATE ORREPLACETRIGGER CLIENT_MAST_STAT
+ BEFORE DELETE ORUPDATEONCLIENTMASTER
+ BEGIN
+ IF UPDATING THEN
+ INSERT INTO CLIENT_AUDIT_STAT VALUES('UPDATE', current_timestamp);
+ ELSE
+ INSERT INTO CLIENT_AUDIT_STAT VALUES('DELETE', current_timestamp);
+ ENDIF;
+ END;–for row trigger
+ CREATE ORREPLACETRIGGER CLIENT_MAST_ROW
+ BEFORE DELETE ORUPDATEONCLIENTMASTER
+ FOREACHROW
+ BEGIN
+ IF UPDATING THEN
+ INSERT INTO CLIENT_AUDIT_ROW VALUES('UPDATE', current_timestamp, :old.CLIENT_ID,
+ :old.NAME, :old.ORDER_AMT);
+ ELSE
+ INSERT INTO CLIENT_AUDIT_ROW VALUES('DELETE', current_timestamp, :old.CLIENT_ID,
+ :old.NAME, :old.ORDER_AMT);
+ ENDIF;
+ END;
+ UPDATE CLIENTMASTER SET ORDER_AMT=ORDER_AMT+500;
+ DELETE FROMCLIENTMASTER WHERECLIENT_ID=4;
+ OUTPUT:
+
+
+ 
+Question 3: Write a before trigger for Insert, update event considering following
+ requirement: Emp(e_no, e_name, salary)
+ I) Trigger action should be initiated when salary is tried to be inserted is less than Rs.
+ 50,000/
+II) Trigger action should be initiated when salary is tried to be updated for value less than Rs.
+ 50,000/
+Action should be rejection of update or Insert operation by displaying appropriate error
+ messages. Also, the new values expected to be inserted will be stored in new table
+ Tracking(e_no, salary).
+ INPUT:
+ CREATE ORREPLACETRIGGERLOW_SAL_TRIG
+ BEFORE INSERT ORUPDATEOFsalary ON EMP
+ FOREACHROW
+ BEGIN
+ IF :new.salary<50000 then
+ raise_application_error(-20003,'Salary field cannot be below set amount!');
+ ELSE
+ INSERT INTO TRACKING VALUES(:new.E_NO, :new.salary);
+ end if;
+ END;
+ UPDATE EMPSETSALARY=49999 WHEREE_NO=16;
+ INSERT INTO EMP VALUES(97,'KIRAN',50090);
+ OUTPUT:
+ Error starting at line : 2 in command
+UPDATE EMPSETSALARY=49999 WHEREE_NO=16
+ Error report
+ORA-20201: Salary field cannot be below set amount!
+ ORA-06512: at "SYSTEM.LOW_SAL_TRIG", line 7
+ ORA-04088: error during execution of trigger 'SYSTEM.LOW_SAL_TRIG'
+ 1 row inserted
+ BEFORE TABLE:
+ AFTER TABLE(TRACKING):
+
+
+Question 4: Employee (emp_id, dept_id emp_name, DoJ, salary, commission,job_title)
+ Consider the schema given above. Write a trigger to ensure that whenever the job title is
+ changed for an employee write the following details into the job_history table. Employee ID,
+ old job title, old department ID, DoJ for start date, system date for end date.
+ INPUT:
+ create or replace TRIGGER JOB_CHANGE_LOGGER
+ AFTER UPDATE OFJOB_TITLE ON EMPLOYEE
+ FOREACHROW
+ BEGIN
+ insert into job_history values(:old.emp_id, :old.job_title, :old.dept_id, :old.DOJ,
+ to_date(current_date));
+ END;
+ UPDATE EMPLOYEESETJOB_TITLE='SENIOR DEVELOPER' WHERE EMP_ID=27;
+ OUTPUT:
+ 1 row updated.
+ Before Table:
+ After Changes Table:
+ Job_History Table:

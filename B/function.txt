@@ -1,0 +1,145 @@
+Q.1 Write a stored function in PL/SQL for given requirement and use the same
+ in PL/SQL block.
+ Account no. and branch name will be accepted from user. The same will be searched in
+ table acct_details. If status of account is active then display appropriate message and also
+ store the account details in active_acc_details table, otherwise display message on screen
+ “account is inactive”.
+ INPUT CODE:–function code
+ create or replace FUNCTION status_acc(in_acc_no IN ACC_DETAILS.ACC_NO%TYPE,
+ in_branch IN ACC_DETAILS.BRANCH_NAME%TYPE) RETURN NUMBER
+ IS
+ BEGIN
+ DECLARE
+ sts INT:=NULL;
+ rec ACC_DETAILS%ROWTYPE;
+ no_status EXCEPTION;
+ BEGIN
+ SELECT * INTO rec FROM ACC_DETAILS WHERE ACC_NO=in_acc_no AND
+ BRANCH_NAME=in_branch;
+ IF(rec.BRANCH_STATUS='ACTIVE') THEN
+ INSERT INTO ACTIVE_ACC_DET VALUES(rec.acc_no, rec.branch_name,
+ rec.acc_type);
+ sts:=1;
+ ELSIF(rec.BRANCH_STATUS='INACTIVE') THEN
+ sts:=0;
+ ENDIF;
+ RETURNsts;
+ EXCEPTION
+ WHENno_status THEN
+ dbms_output.put_line('Could not find status of the requested branch');
+ WHENno_data_found THEN
+ dbms_output.put_line('No data found for the acc no: '||in_acc_no);
+ WHENothers THEN
+ dbms_output.put_line('An error has occurred.');
+ RETURN-1;
+ END;
+ ENDstatus_acc;–execution code
+ SET SERVEROUTPUT ON
+ DECLARE
+ X INT:=STATUS_ACC(233,'BORIVALI');
+ BEGIN
+ IF X=0 THEN
+ dbms_output.put_line('Mentioned account is inactive.');
+ ELSIF X=1 THEN
+ dbms_output.put_line('Mentioned account is active!');
+ ENDIF;
+ END;
+OUTPUT:
+
+
+
+ Q.2 Write a Stored Procedure namely proc_Grade for the categorization of students. If
+ marks scored by students in examination is <=1500 and marks>=990 then student will be
+ placed in distinction category if marks scored are between 989 and900 category is first
+ class, if marks 899 and 825 category is Higher Second Class. Write a PL/SQL block for
+ using procedure created with the above requirement.
+ Stud_Marks(Roll_No,Name, total_marks)
+ Result(Roll,Name, Class)
+ INPUT CODE:
+ create or replace PROCEDURE class_calc(in_roll_no IN STUD_MARKS.ROLL_NO%TYPE)
+ IS
+ BEGIN
+ DECLARE
+ nmvarchar(100);
+ mk NUMBER;
+ BEGIN
+ SELECT MARKS,NAME INTO mk,NM FROMSTUD_MARKSWHERE
+ ROLL_NO=in_roll_no;
+ if(mk>=990 AND mk<=1500) then
+INSERT INTO CLS_OBT values(in_roll_no, nm,'Distinction');
+ elsif(mk>=989 AND mk<=900) then
+ INSERT INTO CLS_OBT VALUES(in_roll_no, nm, 'First class');
+ elsif(mk>=899 AND mk<=825) then
+ INSERT INTO CLS_OBT VALUES(in_roll_no, nm, 'Higher second class');
+ elsif(mk>=800 AND mk<=600) then
+ INSERT INTO CLS_OBT VALUES(in_roll_no, nm, 'pass');
+ else
+ INSERT INTO CLS_OBT VALUES(in_roll_no, nm, 'Fail');
+ end if;
+ END;
+ END;
+ EXEC CLASS_CALC(20);
+ OUTPUT:
+
+
+
+Q.3 Consider following schema for Bank database.
+ Account(Account_No,Cust_Name,Balance, NoOfYears) Earned_Interest(Account_No,
+ Interest_Amt) Write a PL/SQL procedure for following requirement. Take as input
+ Account_No and Interest Rate from User. Calculate the Interest_Amt as simple interest for
+ the given Account_No and store it in Earned_Interest table. Display all the details of
+ Earned_Interest Table.
+ INPUT CODE:
+ create or replace PROCEDURE simple_intr(in_acc_no IN ACCOUNT.ACC_NO%TYPE,
+ intr_rate IN NUMBER) IS
+ BEGIN
+ DECLARE
+ bal NUMBER;
+ noy NUMBER;
+ amt FLOAT;
+ unknown_val exception;
+ BEGIN
+ SELECT BALANCE,NO_OF_YEARS INTO bal,noy FROM ACCOUNT WHERE
+ ACC_NO=in_acc_no;
+ amt:=ROUND(bal*noy*intr_rate/100,3);
+ INSERT INTO EARNED_INTR VALUES(in_acc_no, amt);
+ dbms_output.put_line('Amount with interest for acc: '||in_acc_no||' is: '||amt||'Rupees');
+ EXCEPTION
+ WHENunknown_val THEN
+ dbms_output.put_line('Unacceptable value entered.');
+ WHENno_data_found THEN
+ dbms_output.put_line('No data found for account no: '||in_acc_no);
+ WHENOTHERSTHEN
+ dbms_output.put_line('An error has occurred.');
+ END;
+ END;
+ EXEC SIMPLE_INTR(111, 8);
+ OUTPUT:
+
+
+
+ 
+Q.4 Consider the following schema for the Sales table.
+ Sales (Item_No int, Quantity int, Unit_Price number, Status varchar(20))
+ Status can be “Shipped” or “Delivered” or “Returned”. Write a PLSQL function to calculate
+ the total amount of Sales for Items with status “Shipped”. (total_amount = SUM(Quantity *
+ Unit_Price). Display the Total Amount of sales.
+ INPUT CODE:–FUNCTION CODE
+ CREATE ORREPLACEFUNCTIONSALES_AMTRETURNNUMBERIS
+ BEGIN
+ DECLARE
+ total_amt NUMBER:=0;
+ BEGIN
+ SELECT SUM(QUANTITY*UNIT_PRICE) INTO total_amt FROM SALES WHERE
+ STATUS='SHIPPED';
+ RETURNtotal_amt;
+ END;
+ ENDSALES_AMT;–EXECUTION CODE
+ SET SERVEROUTPUT ON
+ DECLARE
+ X NUMBER:=SALES_AMT();
+ BEGIN
+ dbms_output.put_line('Total sales amount for shipped products is: '|| X);
+ END;
+ OUTPUT:
+ Total sales amount for shipped products is: 20300

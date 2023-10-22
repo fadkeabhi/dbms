@@ -1,0 +1,338 @@
+Question 1:
+ 1. Create following tables using given schema and insert appropriate data into these
+ Tables. Student(StudID, Name, Address, Marks)
+ Employee(EmplyeeID, Name, Address, Salary, DateOfJoining ,Department)
+ Weather(CityID, CityName, MinTemp, MaxTemp).
+ mysql> create table student (studid int, name varchar(20), address varchar(50),
+ marks int);
+ mysql> select * from student;
+ +--------+----------+-----------+-------+
+ | studid | name | address | marks |
+ +--------+----------+-----------+-------+
+ |
+ 1 | monik | borivali | 90 |
+ |
+ |
+ |
+ |
+ 2 | sanjhari | dombivali | 92 |
+ 3 | anushka | baner | 89|
+ 4 | pritish | kalyan | 80 |
+ 5 | anirudh | nashik | 77 |
+ +--------+----------+-----------+-------+
+ 5 rows in set (0.00 sec)
+ mysql> create table employee (employeeid int, name varchar(20), address varchar(50),
+ salary int, dateofjoining date, detpartment varchar(20));
+ mysql> select * from employee;
+ +------------+------+----------+--------+---------------+-------------+
+ | employeeid | name | address | salary | dateofjoining | detpartment |
+ +------------+------+----------+--------+---------------+-------------+
+ |
+ 11 | jay | badlapur | 8000 | 2013-10-21 | hr
+ |
+ |
+ 14 | jonu | surat | 8090 | 2012-08-09 | mkt
+ 18 | raju | odisha | 4578 | 2011-09-09 | sales
+ +------------+------+----------+--------+---------------+-------------+
+ 3 rows in set (0.01 sec)
+ |
+ |
+ |
+ mysql> create table Weather(CityID int, CityName varchar(30), MinTemp int, MaxTe
+ mpint);
+ mysql> select * from Weather;
+ +--------+----------+---------+---------+
+ | CityID | CityName | MinTemp | MaxTemp |
+ +--------+----------+---------+---------+
+ |
+ 21 | mumbai | 21| 40|
+ |
+ |
+ 25 | surat | 24| 32|
+ 32 | amravati |
+ 22 |
+ 40 |
+ +--------+----------+---------+---------+
+ 3 rows in set (0.00 sec)
+ 2. Alter Student and Employee table to add Not Null constraint on all columns.
+ mysql> ALTER TABLE student modify studid int not null;
+mysql> ALTER TABLE student modify name varchar(20) not null;
+ mysql> ALTER TABLE student modify address varchar(50) not null;
+ mysql> ALTER TABLE student modify marks int not null;
+ Query OK, 0 rows affected (0.09 sec)
+ Records: 0 Duplicates: 0 Warnings: 0
+ 3. Alter the Student table to add Primary key constraint on StudID column.
+ mysql> ALTER TABLE student add primary key(studid);
+ Query OK, 0 rows affected (0.12 sec)
+ Records: 0 Duplicates: 0 Warnings: 0
+ 4. Create a view JoiningInfo on Employee table displaying Employee ID, Name and
+ DateOfJoining of employees.
+ mysql> create view JoiningInfo AS SELECT employeeid, name, dateofjoining from
+ employee;
+ Query OK, 0 rows affected (0.01 sec)
+ 5. Create index on primary key columns of all the tables.
+ mysql> create index stud_index on student(studid);
+ Query OK, 0 rows affected (0.06 sec)
+ Records: 0 Duplicates: 0 Warnings: 0
+ mysql> create index emp_index on employee(employeeid);
+ Query OK, 0 rows affected (0.06 sec)
+ Records: 0 Duplicates: 0 Warnings: 0
+ mysql> create index weath_index on Weather(cityid);
+ Query OK, 0 rows affected (0.06 sec)
+ Records: 0 Duplicates: 0 Warnings: 0
+ 6. Create view MarksInfo on Student table displaying StuID and Marks.
+ mysql> create view marksinfo as select studid, marks from student;
+ Query OK, 0 rows affected (0.01 sec)
+ 7. Change the name of Weather table to WeatherData.
+ mysql> RENAME table Weather to WeatherData;
+ Query OK, 0 rows affected (0.05 sec)
+ 8. Drop column CityName from WeatherData table.
+ mysql> ALter table WeatherData drop CityName;
+ Query OK, 0 rows affected (0.04 sec)
+ Records: 0 Duplicates: 0 Warnings: 0
+ 9. Add column Grade to Student table.
+mysql> ALter table student add grade char(1);
+ Query OK, 0 rows affected (0.05 sec)
+ Records: 0 Duplicates: 0 Warnings: 0
+ 10. Crate a view “DistinctionStudents” on student table displaying data of students
+ having Distinction as Grade.
+ mysql> create view DistinctionStudents as select studid,name, address, marks from student
+ where grade='Distinction';
+ Query OK, 0 rows affected (0.02 sec)
+ 11. Create a sequence on StudID in student table.
+ 12. Create a synonym ‘Emp_Info’ for Employee table.
+ Question 2:
+ Create following tables using given schema and insert appropriate data into these
+ tables.
+ Places(cid, city, state, season, type)
+ Customer (cust_id, c_name, phno, emailid, interest)
+ Booking(Bid, cust_id, cid, pkgfee, noofpkg, fdate, todate)
+ 1.) Create places table with column level primary key constraint.
+ 2.) Create customer table with table level constraints of primary key.
+ 3.) Create booking table with table level foreign key constraint and later on, add
+ primary key and a foreign key constraint.
+ 4.) For above tables add some records.
+ mysql> create table places(cid int primary key, city varchar(30), state varchar(30), season
+ varchar(30), type varchar(30));
+ Query OK, 0 rows affected (0.07 sec)
+ mysql> create table customer(cust_id int primary key, c_name varchar(30), phno bigint,
+ emailid varchar(30), interest varchar(30));
+ Query OK, 0 rows affected (0.06 sec)
+ mysql> create table booking(bid int primary key, cust_id int, cid int , pkg_fee int, nop int,
+ fdate date, todate date, foreign key(cid) references places(cid));
+ mysql> alter table booking add foreign key(cust_id) references customer(cust_id);
+ mysql> select * from places;
+ +-----+-----------+-----------------+---------+-----------+
+ | cid | city
+ | state
+ | season | type |
+ +-----+-----------+-----------------+---------+-----------+
+ |
+ 1 | Mumbai |Maharashtra | Monsoon | Adventure |
+ |
+ |
+ |
+ 2 | Haridwar | UK
+ | Summer | Holy |
+ 3 | Shimla | HimachalPradesh | WInter | Trekking |
+ 4 | Pune |Maharashtra | Summer | Holy |
+ +-----+-----------+-----------------+---------+-----------+
+ 4 rows in set (0.00 sec)
+mysql> select * from customer;
+ +---------+----------+-------------+-------------------+-----------+
+ | cust_id | c_name | phno
+ | emailid
+ | interest |
+ +---------+----------+-------------+-------------------+-----------+
+ |
+ 10 | Monik | 9323458895 | monik56@gmail.com | Adventure |
+ |
+ |
+ 11 | Sanjhari | 87898858895 | sanjh45@gmail.com | Holy
+ |
+ 12 | Anirudh | 9098858997 | xamp23@gmail.com | Trekking |
+ |
+ |
+ |
+ 13 | Divyam | 9337868745 | x786y3@gmail.com | Adventure |
+ 14 | Aditi | 64783889 | hhgy382@gmail.com | Holy |
+ 15 | Anushka | 7473897984 | hjgyu7@gmail.com | Trekking |
+ +---------+----------+-------------+-------------------+-----------+
+ 6 rows in set (0.00 sec)
+ mysql> select * from booking;
+ +-----+---------+------+---------+------+------------+------------+
+ | bid | cust_id | cid | pkg_fee | nop | fdate
+ | todate |
+ +-----+---------+------+---------+------+------------+------------+
+ | 54 | 11| 2| 55000| 4|2021-10-21|2023-11-05 |
+ | 55 | 12| 3| 65000| 2|2021-09-25|2023-10-09 |
+ | 56 | 10| 1| 36000| 1|2021-11-10|2024-01-05 |
+ | 59 | 14| 4| 99000| 4|2021-09-09|2024-10-10 |
+ +-----+---------+------+---------+------+------------+------------+
+ 4 rows in set (0.00 sec)
+ 5. Create a view cityview having place id ,city and type from places table.
+ mysql> Create view cityview as select cid, city, type from places;
+ mysql> select * from cityview;
+ +-----+----------+-----------+
+ | cid | city
+ | type
+ |
+ +-----+----------+-----------+
+ |
+ 1 | Mumbai | Adventure |
+ |
+ |
+ |
+ 2 | Haridwar | Holy
+ |
+ 3 | Shimla | Trekking |
+ 4 | Pune |Holy |
+ +-----+----------+-----------+
+ 4 rows in set (0.00 sec)
+ 6.) Create a view which will display customer name and name of cities of
+ their interest.
+ create view city_interest as select c_name, city from customer, places where
+ customer.interest=places.type;
+ Query OK, 0 rows affected (0.03 sec)
+ mysql> select * from city_interest;
+ +----------+----------+
+ | c_name | city |
+ +----------+----------+
+| Monik | Mumbai |
+ | Sanjhari | Pune |
+ | Sanjhari | Haridwar |
+ | Anirudh | Shimla |
+ | Divyam | Mumbai |
+ | Aditi | Pune |
+ | Aditi | Haridwar |
+ | Anushka | Shimla |
+ +----------+----------+
+ 8 rows in set (0.02 sec)
+ 7.) Create a view which will display customer name, city that he has booked along
+ with fees he has paid.
+ mysql> Create view booking_info as select c_name, city, (pkg_fee*nop) as total_fee from
+ customer, places, booking where customer.cust_id=booking.cust_id and
+ places.cid=booking.cid;
+ mysql> select * from booking_info;
+ +----------+----------+---------------+
+ | c_name | city | total_fee |
+ +----------+----------+---------------+
+ | Monik | Mumbai |
+ 36000 |
+ | Sanjhari | Haridwar |
+ | Anirudh | Shimla |
+ | Aditi | Pune |
+ 220000 |
+ 130000 |
+ 396000 |
+ +----------+----------+---------------+
+ 4 rows in set (0.00 sec)
+ 8.) Add a record in places using city view.
+ mysql> Insert into cityview(cid, city, type) values(5, ‘Guwahati’, ‘Sightseeing’);
+ Query OK, 1 row affected (0.01 sec)
+ mysql> select * from places;
+ +-----+----------+-----------------+---------+-------------+
+ | cid | city
+ | state
+ | season | type
+ |
+ +-----+----------+-----------------+---------+-------------+
+ |
+ 1 | Mumbai | Maharashtra | Monsoon | Adventure |
+ |
+ |
+ 2 | Haridwar | UK
+ | Summer | Holy
+ |
+ 3 | Shimla | HimachalPradesh | WInter | Trekking |
+ |
+ |
+ 4 | Pune |Maharashtra | Summer | Holy
+ 5 | Guwahati | NULL
+ |
+ | NULL |Sightseeing |
+ +-----+----------+-----------------+---------+-------------+
+ 5 rows in set (0.00 sec)
+ 9.) Change type of particular city in places table using cityview.
+ mysql> Update cityview set type='Adventure' where city='Shimla';
+ Query OK, 1 row affected (0.02 sec)
+Rows matched: 1 Changed: 1 Warnings: 0
+ mysql> select * from places;
+ +-----+----------+-----------------+---------+-------------+
+ | cid | city
+ | state
+ | season | type
+ |
+ +-----+----------+-----------------+---------+-------------+
+ |
+ 1 | Mumbai | Maharashtra | Monsoon | Adventure |
+ |
+ |
+ 2 | Haridwar | UK
+ | Summer | Holy
+ |
+ 3 | Shimla | HimachalPradesh | WInter | Adventure |
+ |
+ |
+ 4 | Pune |Maharashtra | Summer | Holy
+ 5 | Guwahati | NULL
+ |
+ | NULL |Sightseeing |
+ +-----+----------+-----------------+---------+-------------+
+ 5 rows in set (0.00 sec)
+ 10.) Delete all cities information who belong to type “holy”
+ using cityview.
+ mysql> Delete from cityview where type=’holy’;
+ //cannot perform this as a foreign key constraint fails. Also, we didn’t use the “ON DELETE [
+ ]” command when creating the foreign key constraint.
+ 11.) Create an index on city name of place table.
+ mysql> create index cname_index on places(city);
+ Query OK, 0 rows affected (0.11 sec)
+ Records: 0 Duplicates: 0 Warnings: 0
+ 12.) Create an index on interest field on customer table using alter
+ Command.
+ mysql> Alter table customer add index inter_index(interest);
+ Query OK, 0 rows affected (0.08 sec)
+ Records: 0 Duplicates: 0 Warnings: 0
+ 13.) Display all indexes on a particular table.
+ mysql> Show indexes from customer;
+ +----------+------------+-------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+ | Table | Non_unique | Key_name | Seq_in_index | Column_name | Collation | Cardinality
+ | Sub_part | Packed | Null | Index_type | Comment | Index_comment | Visible | Expression |
+ +----------+------------+-------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+ | customer |
+ |
+ | BTREE |
+ | customer |
+ 0 | PRIMARY |
+ |
+ 1 | cust_id | A
+ | YES |NULL |
+ 1 | inter_index |
+ YES |BTREE | |
+ 1 | interest | A
+ |
+ |
+ 6 | NULL| NULL
+ 3 | NULL| NULL|
+ | YES |NULL |
+ +----------+------------+-------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+---------+------------+
+2 rows in set (0.03 sec)
+ 14.) Remove primary key constraint from customer table.
+ mysql> Alter table customer drop primary key;
+ ERROR1553 (HY000): Cannot drop index 'PRIMARY': needed in a foreign key constraint
+ //works if we first drop the foreign key(cust_id) which is referencing the primary key(cust_id);
+ 15.) Remove foreign key constraint on city id from booking Table.
+ Alter table booking drop foreign key booking_ibfk_1;
+ Query OK, 0 rows affected (0.04 sec)
+ Records: 0 Duplicates: 0 Warnings: 0
+ 16.) Remove index on interest.
+ mysql> alter table customer drop index inter_index;
+ Query OK, 0 rows affected (0.05 sec)
+ Records: 0 Duplicates: 0 Warnings: 0
+ 17.) Remove all records of customer permanently.
+ mysql> Truncate table customer; | delete from customer;
+ Cannot truncate a table referenced in a foreign key constraint (`dbms_lab`.`booking`,
+ CONSTRAINT `booking_ibfk_2`)
+ //works if we first drop the foreign key(booking.cust_id) which is referencing the primary
+ key(customer.cust_id);

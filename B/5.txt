@@ -1,0 +1,154 @@
+Assignment 1: Consider table Stud(Roll, Att,Status) Write a PL/SQL block for following
+requirement and handle the exceptions. Roll no. of student will be entered
+by user. Attendance of roll no. entered by user will be checked in Stud
+table. If attendance is less than 75% then display the message “Term not
+granted” and set the status in stud table as “D”. Otherwise display
+message “Term granted” and set the status in stud table as “ND”.
+
+INPUT:
+SET SERVEROUTPUT ON
+DECLARE
+    R_no NUMBER:=NULL;
+    Att NUMBER:=NULL;
+    sts varchar(20):='NULL';
+    no_att EXCEPTION;
+BEGIN
+    R_no:=&rollno;
+    select ATTENDANCE INTO Att from stud where Roll_no=R_no;
+    if Att is NULL then
+        raise no_att;
+    end if;
+    if Att>75 THEN
+        Update stud set STATUS='ND' WHERE roll_no=R_no;
+    ELSE
+        Update stud set STATUS='D' WHERE roll_no=R_no;
+    End if;
+    dbms_output.put_line('Successfully set status of student '|| R_no);
+    dbms_output.put_line('BELOW SHOWS UPDATED value: ');
+    select status into sts from stud where roll_no=r_no;
+    dbms_output.put_line(sts);
+    
+    EXCEPTION
+        WHEN no_att THEN
+            dbms_output.put_line('Attendance of student roll number: ' || r_no ||' is NULL!');
+        WHEN no_data_found THEN
+            dbms_output.put_line('No student found with roll no: ' || R_no);
+        WHEN others THEN
+            dbms_output.put_line('Error!');
+END;
+
+
+OUTPUT: STUD TABLE (BEFORE)					STUD TABLE (AFTER) 
+ 
+ASSIGNMENT 2: Write a PL/SQL block of code for the following requirements:- Schema:
+1. Borrower(Rollin, Name, DateofIssue, NameofBook, Status) 2. Fine(Roll_no,Date,Amt) Accept roll_no & name of book from user. Check the number of days (from date of issue), if days are between 15 to 30 then fine amount will be Rs 5per day. If no. of days>30, per day fine will be Rs 50 per day & for days less than 30, Rs. 5 per day. After submitting the book, status will
+change from I to R. If condition of fine is true, then details will be stored into fine table.
+
+INPUT:
+SET SERVEROUTPUT ON
+
+DECLARE
+    ROLL_NO NUMBER;
+    B_NAME VARCHAR(255);
+    BUFFERDATE DATE;
+    BUFFERNUM NUMBER;
+    FINE_AMT NUMBER:=0;
+    FINE_FLAG NUMBER:=0;
+BEGIN  
+    ROLL_NO:=&ROLLNO;
+    B_NAME:='&BOOK_NAME';
+    SELECT DOI INTO BUFFERDATE FROM BORROWER WHERE ROLLIN=ROLL_NO;
+    SELECT TO_DATE(CURRENT_DATE) - BUFFERDATE INTO BUFFERNUM FROM DUAL;
+    IF BUFFERNUM<=15 THEN
+        dbms_output.put_line('Book Returned within 15 days, no fine imposed!');
+    ELSIF (BUFFERNUM>15 AND BUFFERNUM<=30) THEN
+        FINE_FLAG:=1;
+        FINE_AMT:=(BUFFERNUM-15)*5;
+    ELSE
+        FINE_FLAG:=1;
+        FINE_AMT:=(15*5)+(BUFFERNUM-30)*50;
+    END IF;
+    UPDATE borrower SET STATUS='R' WHERE ROLLIN=ROLL_NO; 
+    IF FINE_FLAG=1 THEN
+        BUFFERDATE:=TO_DATE(CURRENT_DATE);
+        INSERT INTO FINE VALUES(ROLL_NO, BUFFERDATE, FINE_AMT);
+        dbms_output.put_line(b_name||' returned by Roll Number '|| roll_no ||' is late by '|| (buffernum-15) ||' DAYS, a penalty of RS '||fine_amt||' is imposed!');
+    END IF;
+    EXCEPTION
+        WHEN no_data_found THEN
+            DBMS_OUTPUT.PUT_LINE('NO RECORD FOUND FOR GIVEN INPUT');
+END;
+
+OUTPUT:  BORROWER TABLE and FINE TABLE (UPDATED)
+            
+ASSIGNMENT 3: Write a PL/SQL block for following requirement using user defined exception handling. The account_master table records the current balance for an account, which is updated whenever, any deposits or withdrawals takes place. (Acc_no, Cust_name, Balance) Input: Acc_no, Operation, Amount If the withdrawal attempted is more than the current balance held in the account. The user defined exception is raised, displaying an appropriate message. Write a PL/SQL block for above requirement using user defined exception handling.
+
+INPUT:
+SET SERVEROUTPUT ON
+DECLARE
+    ACC_NO NUMBER;
+    AMT NUMBER;
+    CHOICE INT;
+    BUFFER_BAL NUMBER;
+    EXCESS_AMT exception;
+BEGIN
+    ACC_NO:=&ENTER_ACCOUNT_NO;
+    AMT:=&ENTER_AMOUNT;
+<<again>>CHOICE:=&ENTER_1toDEPOSIT_2toWITHDRAW_3toEXIT;
+    IF (CHOICE=1) THEN
+        UPDATE ACCOUNT_MASTER SET balance=balance+AMT WHERE accno=ACC_NO;
+        SELECT BALANCE INTO BUFFER_BAL FROM ACCOUNT_MASTER WHERE accno=ACC_NO;
+        DBMS_OUTPUT.PUT_LINE('Amount of RS'|| amt || ' has been deposited successfully, updated account balance is RS'||buffer_bal);
+    ELSIF (CHOICE=2) THEN
+        SELECT BALANCE INTO BUFFER_BAL FROM ACCOUNT_MASTER WHERE accno=ACC_NO;
+        IF ((BUFFER_BAL-AMT)<0) THEN
+            RAISE EXCESS_AMT;
+        ELSE
+            UPDATE ACCOUNT_MASTER SET BALANCE=BALANCE-AMT WHERE accno=ACC_NO;
+            DBMS_OUTPUT.PUT_LINE('Amount of RS.'|| amt || ' has been deducted, leaving an account balance of RS.'||(BUFFER_BAL-AMT)|| ‘(For Ac. ’||accno||’)’);
+        END IF;
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('Invalid Input encountered. Please Try again: ');
+        --GOTO again;
+    END IF;
+    EXCEPTION
+          WHEN no_data_found THEN
+            dbms_output.put_line('No Customer with accno: '|| acc_no ||' found in database:/');
+          WHEN EXCESS_AMT THEN
+            DBMS_OUTPUT.PUT_LINE('ERROR Withdrawing! Insufficient Funds.');
+END;	
+
+OUTPUT:
+Amount of RS.400 has been deducted, leaving an account balance of RS.4145.    (For Ac. 5591)
+Amount of RS.23999 has been deducted, leaving an account balance of RS.589.  (For Ac. 5592)
+
+ 
+ASSIGNMENT 4: Write a PL/SQL code block to calculate the area of a circle for a value of
+radius varying from 5 to 9. Store the radius and the corresponding values of calculated area in an empty table named areas, consisting of two columns, radius and area.
+
+INPUT:
+SET SERVEROUTPUT ON
+DECLARE
+    R NUMBER:=5;
+    pi FLOAT:=acos(-1);   --equivalent to pi=3.145…
+    A FLOAT;
+BEGIN
+    LOOP        -- loop
+        A:=ROUND(pi_value*RAD*RAD, 3);     --upto 3 decimal places
+        dbms_output.put_line('Area for radius of circle: '|| R || ' is: '||A);
+        INSERT INTO AREAS VALUES (R, A);
+        R:=R+1;
+        EXIT WHEN R=10;
+    END LOOP;
+END;
+
+OUTPUT:
+Area for radius of circle: 5 is: 78.539
+Area for radius of circle: 6 is: 113.097
+Area for radius of circle: 7 is: 153.938
+Area for radius of circle: 8 is: 201.061
+Area for radius of circle: 9 is: 254.469
+
+
+AREAS TABLE (FINAL):
+ 

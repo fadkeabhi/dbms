@@ -1,0 +1,443 @@
+Q1. Create the Collection Employee_Data ( Employee_ID, Employee_Name, Department,
+ Salary) and solve the following:
+ dbms> db.employee.find()
+ [
+ {
+ _id: ObjectId("6516ea97ebed3522d31b6581"),
+ empid: 99,
+ empname: 'Joel',
+ dept: 'sales',
+ salary: 100000
+ },
+ {
+ _id: ObjectId("6516ea97ebed3522d31b6582"),
+ empid: 100,
+ empname: 'Gayatri',
+ dept: 'IT',
+ salary: 200000
+ },
+ {
+ _id: ObjectId("6516ea97ebed3522d31b6583"),
+ empid: 102,
+ empname: 'Joe',
+ dept: 'R&D',
+ salary: 99099
+ },
+ {
+ _id: ObjectId("6516ea97ebed3522d31b6585"),
+ empid: 103,
+ empname: 'krishna',
+ dept: 'hr',
+ salary: 30000
+ },
+ {
+ _id: ObjectId("6516eb37ebed3522d31b6586"),
+ empid: 119,
+ empname: 'pinio',
+ dept: 'market',
+ salary: 10000
+ },
+ {
+ _id: ObjectId("6516eb37ebed3522d31b6587"),
+ empid: 112,
+ empname: 'Gael',
+ dept: 'IT',
+ salary: 2086664
+ },
+ {
+ _id: ObjectId("6516eb37ebed3522d31b6588"),
+empid: 111,
+ empname: 'Gates',
+ dept: 'R&D',
+ salary: 90082
+ },
+ {
+ _id: ObjectId("6516eb37ebed3522d31b6589"),
+ empid: 110,
+ empname: 'Harshad',
+ dept: 'R&D',
+ salary: 39090
+ },
+ {
+ _id: ObjectId("6516eb37ebed3522d31b658a"),
+ empid: 109,
+ empname: 'komal',
+ dept: 'R&D',
+ salary: 300000
+ }
+ ]
+ 1. Display all employees based on their departments along with an average salary of a
+ particular department.
+ dbms> db.employee.aggregate({$group:{_id:"$dept",
+ emplist:{$push:"$empname"},avgSalary: {$avg: "$salary"}}})
+ [
+ {
+ _id: 'R&D',
+ emplist: [ 'Joe', 'Gates', 'Harshad', 'komal' ],
+ avgSalary: 132067.75
+ },
+ { _id: 'sales', emplist: [ 'Joel' ], avgSalary: 100000 },
+ { _id: 'hr', emplist: [ 'krishna' ], avgSalary: 30000 },
+ { _id: 'market', emplist: [ 'pinio' ], avgSalary: 10000 },
+ { _id: 'IT', emplist: [ 'Gayatri', 'Gael' ], avgSalary: 1143332 }
+ ]
+ 2. Displays the number of employees associated with a particular Department.
+ dbms> db.employee.aggregate({$group:{_id:"$dept", TotalEmployees: {$count:{}}}})
+ [
+ { _id: 'R&D', TotalEmployees: 4 },
+ { _id: 'sales', TotalEmployees: 1 },
+ { _id: 'hr', TotalEmployees: 1 },
+ { _id: 'market', TotalEmployees: 1 },
+ { _id: 'IT', TotalEmployees: 2 }
+ ]
+3. Create an index on field Employee ID.
+ dbms> db.employee.createIndex({empid:1})
+ empid_1
+ 4. Create an index on fields “Employee Name‘ and “Department”.
+ dbms> db.employee.createIndex({empname:1, dept:1})
+ empname_1_dept_1
+ 5. Drop an index on field Employee ID.
+ dbms> db.employee.dropIndex("empid_1")
+ { nIndexesWas: 3, ok: 1 }
+ Q2. Create the Collection Library_Data( Book_ID, Book_Name, Author,
+ Genre, Publication) and solve the following:
+ db.createCollection('lib_data')
+ { ok: 1 }
+ db.lib_data.insertMany([{book_id: 20, book_name: "harry potter and the sorcerer's stone",
+ author: "j. k. rowling", genre: ["fantasy"], publication: " bloomsbury publishing", price: 550},
+ {book_id: 31, book_name: "chronicles of narnia", author: "c s lewis", genre: ["fantasy"],
+ publication: "harpercollins", price: 490}, {book_id: 52, book_name: "pride and prejudice",
+ author: "jane austen", genre: ["romance", "drama"], publication: "anonymous", price: 560},
+ {book_id: 78, book_name: "the fault in our stars", author: "john green", genre: ["romance",
+ "comedy"],publication: "penguin books", price: 450}, {book_id: 43, book_name: "to kill a
+ mockingbird", author: "herper lee", genre: ["mystery", "drama", "crime"], publication: "j. b.
+ lippincott & co.", price: 690}, {book_id: 23, book_name: "harry potter and the chamber of
+ secrets", author: "j. k. rowling", genre: ["fantasy"], publication: "bloomsbury publishing", price:
+ 600}, {book_id: 67, book_name: "sense and sensibility", author: "jane austen", genre:
+ ["drama"], publication: "anonymous", price: 590}])
+ {
+ acknowledged: true,
+ insertedIds: {
+ '0': ObjectId("651969810106058bd5ff5da5"),
+ '1': ObjectId("651969810106058bd5ff5da6"),
+ '2': ObjectId("651969810106058bd5ff5da7"),
+ '3': ObjectId("651969810106058bd5ff5da8"),
+ '4': ObjectId("651969810106058bd5ff5da9"),
+ '5': ObjectId("651969810106058bd5ff5daa"),
+ '6': ObjectId("651969810106058bd5ff5dab")
+ }
+ }
+1. Display a list stating how many books are written by each “Author”.
+ db.lib_data.aggregate({$group:{_id:"$author", no_of_books: {$count:{}}}})
+ 2. Display list books with the highest price in each Genre.
+ db.lib_data.aggregate({$group:{_id:"$genre", list_of_books:{$push:"$book_name"},
+ highest_price: {$max:"$price"}}})
+ 3. Display list books with the highest price in each Genre in ascending order
+ of price.
+ db.lib_data.aggregate([{$sort:{price:1}}, {$group:{_id:"$genre",
+ list_of_books:{$push:"$book_name"}, highest_price: {$max:"$price"}}}])
+ 4. Create an index on field Book_ID.
+ db.lib_data.createIndex({book_id: 1})
+ book_id_1
+ 5. Create an index on fields ”Book_Name” and ”Author”.
+ db.lib_data.createIndex({book_name:1, author: 1})
+ book_name_1_author_1
+ 6. Drop an index on field Book_ID.
+ db.lib_data.dropIndex({book_id: 1})
+ { nIndexesWas: 3, ok: 1 }
+ Q3. Create the Collection Movies_Data( Movie_ID, Movie_Name, Director, Genre,
+ BoxOfficeCollection) and solve the following:
+ dbms> db.movies.find()
+ [
+ {
+ _id: ObjectId("6517c5a7b44a64c5d20b5a0b"),
+ movieid: 101,
+ moviename: 'John Wick 3',
+ director: 'ABC',
+ genre: 'Action',
+ boxoffice: 327.7
+ },
+ {
+ _id: ObjectId("6517c5a7b44a64c5d20b5a0c"),
+ movieid: 109,
+ moviename: 'Interstellar',
+ director: 'LMN',
+ genre: 'Sci-fi',
+ boxoffice: 701.78
+ },
+ {
+_id: ObjectId("6517c5a7b44a64c5d20b5a0d"),
+ movieid: 107,
+ moviename: 'Insidious 5',
+ director: 'PQR',
+ genre: 'Horror',
+ boxoffice: 345.09
+ },
+ {
+ _id: ObjectId("6517c5a7b44a64c5d20b5a0e"),
+ movieid: 105,
+ moviename: 'NUN 2',
+ director: 'XYZ',
+ genre: 'Horror',
+ boxoffice: 109.2
+ },
+ {
+ _id: ObjectId("6517c5a7b44a64c5d20b5a0f"),
+ movieid: 103,
+ moviename: 'Mission Impossible 7',
+ director: 'ABC',
+ genre: 'Action',
+ boxoffice: 209.89
+ },
+ {
+ _id: ObjectId("6517c77ab44a64c5d20b5a10"),
+ movieid: 120,
+ moviename: 'Resident Evil',
+ director: 'ABC',
+ genre: 'Horror',
+ boxoffice: 786.48
+ },
+ {
+ _id: ObjectId("6517c77ab44a64c5d20b5a11"),
+ movieid: 115,
+ moviename: 'Meg 2',
+ director: 'LMN',
+ genre: 'Action',
+ boxoffice: 111.34
+ },
+ {
+ _id: ObjectId("6517c77ab44a64c5d20b5a12"),
+ movieid: 114,
+ moviename: 'Alien',
+ director: 'LMN',
+ genre: 'Sci-fi',
+ boxoffice: 333.8
+ },
+ {
+_id: ObjectId("6517c77ab44a64c5d20b5a13"),
+ movieid: 1112,
+ moviename: 'the Martian',
+ director: 'XYZ',
+ genre: 'Sci-fi',
+ boxoffice: 630.85
+ },
+ {
+ _id: ObjectId("6517c77ab44a64c5d20b5a14"),
+ movieid: 111,
+ moviename: 'Tenet',
+ director: 'PQR',
+ genre: 'Action',
+ boxoffice: 839.05
+ }
+ ]
+ 1. Display a list stating how many Movies are directed by each “Director”.
+ dbms> db.movies.aggregate({$group:{_id:"$director", no_of_movies:{$count:{}}}})
+ [
+ { _id: 'PQR', no_of_movies: 2 },
+ { _id: 'ABC', no_of_movies: 3 },
+ { _id: 'LMN', no_of_movies: 3 },
+ { _id: 'XYZ', no_of_movies: 2 }
+ ]
+ 2. Display list of Movies with the highest BoxOfficeCollection in each Genre.
+ dbms> db.movies.aggregate({$group:{_id:"$genre", movielist:{$push:"$moviename"},
+ highest_boxoffice:{$max:"$boxoffice"}}})
+ [
+ {
+ _id: 'Horror',
+ movielist: [ 'Insidious 5', 'NUN 2', 'Resident Evil' ],
+ highest_boxoffice: 786.48
+ },
+ {
+ _id: 'Action',
+ movielist: [ 'John Wick 3', 'Mission Impossible 7', 'Meg 2', 'Tenet' ],
+ highest_boxoffice: 839.05
+ },
+ {
+ _id: 'Sci-fi',
+ movielist: [ 'Interstellar', 'Alien', 'the Martian' ],
+ highest_boxoffice: 701.78
+ }
+ ]
+3. Display list of Movies with the highest BoxOfficeCollection in each Genre in
+ ascending order of BoxOfficeCollection.
+ dbms> db.movies.aggregate([{$sort:{boxoffice:1}},{$group:{_id:"$genre",
+ movielist:{$push:"$moviename"}, highest_boxoffice:{$max:"$boxoffice"}}}])
+ [
+ {
+ _id: 'Sci-fi',
+ movielist: [ 'Alien', 'the Martian', 'Interstellar' ],
+ highest_boxoffice: 701.78
+ },
+ {
+ _id: 'Horror',
+ movielist: [ 'NUN 2', 'Insidious 5', 'Resident Evil' ],
+ highest_boxoffice: 786.48
+ },
+ {
+ _id: 'Action',
+ movielist: [ 'Meg 2', 'Mission Impossible 7', 'John Wick 3', 'Tenet' ],
+ highest_boxoffice: 839.05
+ }
+ ]
+ 4. Create an index on the field Movie_ID.
+ dbms> db.movies.createIndex({movieid:1})
+ Movieid_1
+ 5. Create an index on fields ” Movie_Name” and ” Director”.
+ dbms> db.movies.createIndex({moviename:1, director:1})
+ Moviename_1_director_1
+ 6. Drop an index on fields ” Movie_Name” and ” Director”.
+ dbms> db.movies.dropIndex("moviename_1_director_1")
+ { nIndexesWas: 3, ok: 1 }
+ Q4. Create the Collection Student_Data(Student _ID, Student _Name, Department, Marks)
+ dbms> db.student.find()
+ [
+ {
+ _id: ObjectId("6516f5a8ebed3522d31b658c"),
+ name: 'Josh',
+ marks: 67,
+ dept: 'ENTC',
+ stdid: 'A5'
+ },
+ {
+ _id: ObjectId("6516f5a8ebed3522d31b658d"),
+ name: 'Terminator',
+marks: 99,
+ dept: 'COMP',
+ stdid: 'A99'
+ },
+ {
+ _id: ObjectId("6516f5a8ebed3522d31b658e"),
+ name: 'Krisha',
+ marks: 55,
+ dept: 'IT',
+ stdid: 'A11'
+ },
+ {
+ _id: ObjectId("6516f5a8ebed3522d31b658f"),
+ name: 'Sandy',
+ marks: 66,
+ dept: 'COMP',
+ stdid: 'A4'
+ },
+ {
+ _id: ObjectId("6516f6b5ebed3522d31b6590"),
+ name: 'Joe',
+ marks: 30,
+ dept: 'IT',
+ stdid: 'A1'
+ },
+ {
+ _id: ObjectId("6516f6b5ebed3522d31b6591"),
+ name: 'Kratos',
+ marks: 51,
+ dept: 'COMP',
+ stdid: 'A17'
+ },
+ {
+ _id: ObjectId("6516f6b5ebed3522d31b6592"),
+ name: 'paer',
+ marks: 57,
+ dept: 'IT',
+ stdid: 'A14'
+ },
+ {
+ _id: ObjectId("6516f6b5ebed3522d31b6593"),
+ name: 'Pino',
+ marks: 37,
+ dept: 'ENTC',
+ stdid: 'A16'
+ },
+ {
+ _id: ObjectId("6516f6b5ebed3522d31b6594"),
+name: 'krames',
+ marks: 49,
+ dept: 'COMP',
+ stdid: 'A13'
+ },
+ {
+ _id: ObjectId("6517ed38b44a64c5d20b5a15"),
+ name: 'Gaurav',
+ marks: 88,
+ dept: 'COMP',
+ stdid: 'A50'
+ },
+ {
+ _id: ObjectId("6517ed38b44a64c5d20b5a16"),
+ name: 'Himan',
+ marks: 75,
+ dept: 'ENTC',
+ stdid: 'A43'
+ },
+ {
+ _id: ObjectId("6517ed38b44a64c5d20b5a17"),
+ name: 'Kaliya',
+ marks: 63,
+ dept: 'IT',
+ stdid: 'A0'
+ }
+ ]
+ Solve the following:
+ 1. Display all Students based on their departments along with an average Marks of a
+ particular department.
+ dbms> db.student.aggregate({$group:{_id:"$dept", students:{$push:"$name"},
+ avgMarks:{$avg:"$marks"}}})
+ [
+ {
+ _id: 'COMP',
+ students: [ 'Terminator', 'Sandy', 'Kratos', 'krames', 'Gaurav' ],
+ avgMarks: 70.6
+ },
+ {
+ _id: 'ENTC',
+ students: [ 'Josh', 'Pino', 'Himan' ],
+ avgMarks: 59.666666666666664
+ },
+ {
+ _id: 'IT',
+ students: [ 'Krisha', 'Joe', 'paer', 'Kaliya' ],
+ avgMarks: 51.25
+}
+ ]
+ 2. Displays the number of Students associated along with a particular department.\
+ dbms> db.student.aggregate({$group:{_id:"$dept", no_of_students:{$count:{}}}})
+ [
+ ]
+ { _id: 'COMP', no_of_students: 5 },
+ { _id: 'IT', no_of_students: 4 },
+ { _id: 'ENTC', no_of_students: 3 }
+ 3. Display list of Students with the highest Marks in each Department in descending
+ order of Marks.
+ dbms> db.student.aggregate([{$sort:{marks:-1}},{$group:{_id:"$dept",
+ students:{$push:"$name"}, HighestMarks:{$max:"$marks"}}}])
+ [
+ {
+ _id: 'ENTC',
+ students: [ 'Himan', 'Josh', 'Pino' ],
+ HighestMarks: 75
+ },
+ {
+ _id: 'COMP',
+ students: [ 'Terminator', 'Gaurav', 'Sandy', 'Kratos', 'krames' ],
+ HighestMarks: 99
+ },
+ {
+ _id: 'IT',
+ students: [ 'Kaliya', 'paer', 'Krisha', 'Joe' ],
+ HighestMarks: 63
+ }
+ ]
+ 4. Create an index on the field Student_ID.
+ dbms> db.student.createIndex({stdid:1})
+ Stdid_1
+ 5. Create an index on fields “Student_Name‘ and “Department”.
+ dbms> db.student.createIndex({name:1, dept:1})
+ name_1_dept_1
+ dbms> db.student.getIndexes()
+ [
+ { v: 2, key: { _id: 1 }, name: '_id_' },
+ { v: 2, key: { stdid: 1 }, name: 'stdid_1' },
+ { v: 2, key: { name: 1, dept: 1 }, name: 'name_1_dept_1' }
+ ]
+ 6. Drop an index on fields “Student_Name‘ and “Department”.
+ dbms> db.student.dropIndex("name_1_dept_1")
+{ nIndexesWas: 3, ok: 1 }

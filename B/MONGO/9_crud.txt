@@ -1,0 +1,641 @@
+Question 1:
+ Create a collection Social_Media having fields as User_Id, User_Name, No_of_Posts,
+ No_of_Friends, Friends_List, Interests. (Hint: Friends_List and Interests can be of array
+ type) Insert 20 documents in the collection Social_Media. Write queries for Following.
+ dbms> db.createCollection("social_media")
+ { ok: 1 }
+ dbms> db.social_media.insertMany([{userid:1,username:"Joe", nop:102, nof:4,
+ friends:["Aman", "Girish", "XCCS", "Komal"], interest:["videogames", "cricket"]},{userid:3,
+ username:"Komal", nop:204, nof:10, friends:["krishna", "kavya"],
+ interest:["sleeping"]},{userid:5,username:"Joel", nop:78, nof:6, friends:["Aman", "Komal"],
+ interest:["videogames"]},{userid:7,username:"Krishna", nop:780, nof:29, friends:["Girish",
+ "XCCS" ], interest:["cricket","hockey", "music"]},{userid:9,username:"noname", nop:545,
+ nof:1, friends:["XCCS"], interest:["sports", "swimming"]}])
+ {
+ acknowledged: true,
+ insertedIds: {
+ '0': ObjectId("6516e25cebed3522d31b6577"),
+ '1': ObjectId("6516e25cebed3522d31b6578"),
+ '2': ObjectId("6516e25cebed3522d31b6579"),
+ '3': ObjectId("6516e25cebed3522d31b657a"),
+ '4': ObjectId("6516e25cebed3522d31b657b")
+ }
+ }
+ dbms> db.social_media.insertMany([{userid:19,username:"kayoperico", nop:123, nof:13,
+ friends:["Aman", "gael", "krushna", "thakur"], interest:["videogames", "cricket"]},{userid:17,
+ username:"Pino", nop:240, nof:11, friends:["rucha", "kavya"],
+ interest:["procastination","sleeping"]},{userid:15,username:"Gael", nop:70, nof:9,
+ friends:["Komal", "ajay"], interest:["videogames"]},{userid:13,username:"Girish", nop:178,
+ nof:4, friends:["mangesh", "XCCS", "eminem", "triogt" ], interest:["cricket",
+ "music"]},{userid:11,username:"ajay", nop:457, nof:99, friends:[], interest:["golf",
+ "swimming"]}])
+ {
+ acknowledged: true,
+ insertedIds: {
+ '0': ObjectId("6516e35debed3522d31b657c"),
+ '1': ObjectId("6516e35debed3522d31b657d"),
+ '2': ObjectId("6516e35debed3522d31b657e"),
+ '3': ObjectId("6516e35debed3522d31b657f"),
+ '4': ObjectId("6516e35debed3522d31b6580")
+ }
+ }
+ 1. List all the users from collection Social_Media in formatted manner.
+ dbms> db.social_media.find().pretty()
+ [
+ {
+ _id: ObjectId("6516e25cebed3522d31b6577"),
+userid: 1,
+ username: 'Joe',
+ nop: 102,
+ nof: 4,
+ friends: [ 'Aman', 'Girish', 'XCCS', 'Komal' ],
+ interest: [ 'videogames', 'cricket' ]
+ },
+ {
+ _id: ObjectId("6516e25cebed3522d31b6578"),
+ userid: 3,
+ username: 'Komal',
+ nop: 204,
+ nof: 10,
+ friends: [ 'krishna', 'kavya' ],
+ interest: [ 'sleeping' ]
+ },
+ {
+ _id: ObjectId("6516e25cebed3522d31b6579"),
+ userid: 5,
+ username: 'Joel',
+ nop: 78,
+ nof: 6,
+ friends: [ 'Aman', 'Komal' ],
+ interest: [ 'videogames' ]
+ },
+ {
+ _id: ObjectId("6516e25cebed3522d31b657a"),
+ userid: 7,
+ username: 'Krishna',
+ nop: 780,
+ nof: 29,
+ friends: [ 'Girish', 'XCCS' ],
+ interest: [ 'cricket', 'hockey', 'music' ]
+ },
+ {
+ _id: ObjectId("6516e25cebed3522d31b657b"),
+ userid: 9,
+ username: 'noname',
+ nop: 545,
+ nof: 1,
+ friends: [ 'XCCS' ],
+ interest: [ 'sports', 'swimming' ]
+ },
+ {
+ _id: ObjectId("6516e35debed3522d31b657c"),
+ userid: 19,
+ username: 'kayoperico',
+ nop: 123,
+nof: 13,
+ friends: [ 'Aman', 'gael', 'krushna', 'thakur' ],
+ interest: [ 'videogames', 'cricket' ]
+ },
+ {
+ _id: ObjectId("6516e35debed3522d31b657d"),
+ userid: 17,
+ username: 'Pino',
+ nop: 240,
+ nof: 11,
+ friends: [ 'rucha', 'kavya' ],
+ interest: [ 'procastination', 'sleeping' ]
+ },
+ {
+ _id: ObjectId("6516e35debed3522d31b657e"),
+ userid: 15,
+ username: 'Gael',
+ nop: 70,
+ nof: 9,
+ friends: [ 'Komal', 'ajay' ],
+ interest: [ 'videogames' ]
+ },
+ {
+ _id: ObjectId("6516e35debed3522d31b657f"),
+ userid: 13,
+ username: 'Girish',
+ nop: 178,
+ nof: 4,
+ friends: [ 'mangesh', 'XCCS', 'eminem', 'triogt' ],
+ interest: [ 'cricket', 'music' ]
+ },
+ {
+ _id: ObjectId("6516e35debed3522d31b6580"),
+ userid: 11,
+ username: 'ajay',
+ nop: 457,
+ nof: 99,
+ friends: [],
+ interest: [ 'golf', 'swimming' ]
+ }
+ ]
+ 2. Find all users having a number of posts greater than 100.
+ dbms> db.social_media.find({nop:{$gt:100}})
+ [
+ {
+ _id: ObjectId("6516e25cebed3522d31b6577"),
+ userid: 1,
+username: 'Joe',
+ nop: 102,
+ nof: 4,
+ friends: [ 'Aman', 'Girish', 'XCCS', 'Komal' ],
+ interest: [ 'videogames', 'cricket' ]
+ },
+ {
+ _id: ObjectId("6516e25cebed3522d31b6578"),
+ userid: 3,
+ username: 'Komal',
+ nop: 204,
+ nof: 10,
+ friends: [ 'krishna', 'kavya' ],
+ interest: [ 'sleeping' ]
+ },
+ {
+ _id: ObjectId("6516e25cebed3522d31b657a"),
+ userid: 7,
+ username: 'Krishna',
+ nop: 780,
+ nof: 29,
+ friends: [ 'Girish', 'XCCS' ],
+ interest: [ 'cricket', 'hockey', 'music' ]
+ },
+ {
+ _id: ObjectId("6516e25cebed3522d31b657b"),
+ userid: 9,
+ username: 'noname',
+ nop: 545,
+ nof: 1,
+ friends: [ 'XCCS' ],
+ interest: [ 'sports', 'swimming' ]
+ },
+ {
+ _id: ObjectId("6516e35debed3522d31b657c"),
+ userid: 19,
+ username: 'kayoperico',
+ nop: 123,
+ nof: 13,
+ friends: [ 'Aman', 'gael', 'krushna', 'thakur' ],
+ interest: [ 'videogames', 'cricket' ]
+ },
+ {
+ _id: ObjectId("6516e35debed3522d31b657d"),
+ userid: 17,
+ username: 'Pino',
+ nop: 240,
+ nof: 11,
+friends: [ 'rucha', 'kavya' ],
+ interest: [ 'procastination', 'sleeping' ]
+ },
+ {
+ _id: ObjectId("6516e35debed3522d31b657f"),
+ userid: 13,
+ username: 'Girish',
+ nop: 178,
+ nof: 4,
+ friends: [ 'mangesh', 'XCCS', 'eminem', 'triogt' ],
+ interest: [ 'cricket', 'music' ]
+ },
+ {
+ _id: ObjectId("6516e35debed3522d31b6580"),
+ userid: 11,
+ username: 'ajay',
+ nop: 457,
+ nof: 99,
+ friends: [],
+ interest: [ 'golf', 'swimming' ]
+ }
+ ]
+ 3. List the user names and their respective Friends_List
+ dbms> db.social_media.find({},{username:1, friends:1, _id:0})
+ [
+ { username: 'Joe', friends: [ 'Aman', 'Girish', 'XCCS', 'Komal' ] },
+ { username: 'Komal', friends: [ 'krishna', 'kavya' ] },
+ { username: 'Joel', friends: [ 'Aman', 'Komal' ] },
+ { username: 'Krishna', friends: [ 'Girish', 'XCCS' ] },
+ { username: 'noname', friends: [ 'XCCS' ] },
+ {
+ username: 'kayoperico',
+ friends: [ 'Aman', 'gael', 'krushna', 'thakur' ]
+ },
+ { username: 'Pino', friends: [ 'rucha', 'kavya' ] },
+ { username: 'Gael', friends: [ 'Komal', 'ajay' ] },
+ {
+ username: 'Girish',
+ friends: [ 'mangesh', 'XCCS', 'eminem', 'triogt' ]
+ },
+ { username: 'ajay', friends: [] }
+ ]
+ 4. Display the user ids and Friends list of users who have more than 5 Friends.
+ dbms> db.social_media.find({nof:{$gt:5}},{username:1, friends:1})
+ [
+ {
+_id: ObjectId("6516e25cebed3522d31b6578"),
+ username: 'Komal',
+ friends: [ 'krishna', 'kavya' ]
+ },
+ {
+ _id: ObjectId("6516e25cebed3522d31b6579"),
+ username: 'Joel',
+ friends: [ 'Aman', 'Komal' ]
+ },
+ {
+ _id: ObjectId("6516e25cebed3522d31b657a"),
+ username: 'Krishna',
+ friends: [ 'Girish', 'XCCS' ]
+ },
+ {
+ _id: ObjectId("6516e35debed3522d31b657c"),
+ username: 'kayoperico',
+ friends: [ 'Aman', 'gael', 'krushna', 'thakur' ]
+ },
+ {
+ _id: ObjectId("6516e35debed3522d31b657d"),
+ username: 'Pino',
+ friends: [ 'rucha', 'kavya' ]
+ },
+ {
+ _id: ObjectId("6516e35debed3522d31b657e"),
+ username: 'Gael',
+ friends: [ 'Komal', 'ajay' ]
+ },
+ {
+ _id: ObjectId("6516e35debed3522d31b6580"),
+ username: 'ajay',
+ friends: []
+ }
+ ]
+ 5. Display all users with no. of posts in descending order.
+ dbms> db.social_media.find().sort({nop:-1})
+ [
+ {
+ _id: ObjectId("6516e25cebed3522d31b657a"),
+ userid: 7,
+ username: 'Krishna',
+ nop: 780,
+ nof: 29,
+ friends: [ 'Girish', 'XCCS' ],
+ interest: [ 'cricket', 'hockey', 'music' ]
+ },
+{
+ _id: ObjectId("6516e25cebed3522d31b657b"),
+ userid: 9,
+ username: 'noname',
+ nop: 545,
+ nof: 1,
+ friends: [ 'XCCS' ],
+ interest: [ 'sports', 'swimming' ]
+ },
+ {
+ _id: ObjectId("6516e35debed3522d31b6580"),
+ userid: 11,
+ username: 'ajay',
+ nop: 457,
+ nof: 99,
+ friends: [],
+ interest: [ 'golf', 'swimming' ]
+ },
+ {
+ _id: ObjectId("6516e35debed3522d31b657d"),
+ userid: 17,
+ username: 'Pino',
+ nop: 240,
+ nof: 11,
+ friends: [ 'rucha', 'kavya' ],
+ interest: [ 'procastination', 'sleeping' ]
+ },
+ {
+ _id: ObjectId("6516e25cebed3522d31b6578"),
+ userid: 3,
+ username: 'Komal',
+ nop: 204,
+ nof: 10,
+ friends: [ 'krishna', 'kavya' ],
+ interest: [ 'sleeping' ]
+ },
+ {
+ _id: ObjectId("6516e35debed3522d31b657f"),
+ userid: 13,
+ username: 'Girish',
+ nop: 178,
+ nof: 4,
+ friends: [ 'mangesh', 'XCCS', 'eminem', 'triogt' ],
+ interest: [ 'cricket', 'music' ]
+ },
+ {
+ _id: ObjectId("6516e35debed3522d31b657c"),
+ userid: 19,
+username: 'kayoperico',
+ nop: 123,
+ nof: 13,
+ friends: [ 'Aman', 'gael', 'krushna', 'thakur' ],
+ interest: [ 'videogames', 'cricket' ]
+ },
+ {
+ _id: ObjectId("6516e25cebed3522d31b6577"),
+ userid: 1,
+ username: 'Joe',
+ nop: 102,
+ nof: 4,
+ friends: [ 'Aman', 'Girish', 'XCCS', 'Komal' ],
+ interest: [ 'videogames', 'cricket' ]
+ },
+ {
+ _id: ObjectId("6516e25cebed3522d31b6579"),
+ userid: 5,
+ username: 'Joel',
+ nop: 78,
+ nof: 6,
+ friends: [ 'Aman', 'Komal' ],
+ interest: [ 'videogames' ]
+ },
+ {
+ _id: ObjectId("6516e35debed3522d31b657e"),
+ userid: 15,
+ username: 'Gael',
+ nop: 70,
+ nof: 9,
+ friends: [ 'Komal', 'ajay' ],
+ interest: [ 'videogames' ]
+ }
+ ]
+ Question 2:
+ Create a collection Employee with fields as Emp_id, Emp_Name, Department, Salary,
+ Manager. Insert 20 documents in the collection Employee. Write the queries for Following.
+ dbms> db.createCollection("employee")
+ { ok: 1 }
+ dbms> db.employee.insertMany([{empid:99, empname:"Joel", dept:"sales", salary:100000,
+ manager:"Sakshi"},{empid:100, empname:"Gayatri", dept:"IT", salary:150000,
+ manager:"Mehta"},{empid:102, empname:"Joe", dept:"R&D", salary:99099,
+ manager:"Koyal"},{empid:101, empname:"Josh", dept:"IT", salary:45000,
+ manager:"smith"},{empid:103, empname:"krishna", dept:"hr", salary:30000,
+ manager:"Smith"}])
+ {
+acknowledged: true,
+ insertedIds: {
+ '0': ObjectId("6516ea97ebed3522d31b6581"),
+ '1': ObjectId("6516ea97ebed3522d31b6582"),
+ '2': ObjectId("6516ea97ebed3522d31b6583"),
+ '3': ObjectId("6516ea97ebed3522d31b6584"),
+ '4': ObjectId("6516ea97ebed3522d31b6585")
+ }
+ }
+ dbms> db.employee.insertMany([{empid:119, empname:"pinio", dept:"market", salary:10000,
+ manager:"Krushna"},{empid:112, empname:"Gael", dept:"IT", salary:2086664,
+ manager:"Mehta"},{empid:111, empname:"Gates", dept:"R&D", salary:90082,
+ manager:"Koyal"},{empid:110, empname:"Harshad", dept:"R&D", salary:39090,
+ manager:"Smith"},{empid:109, empname:"komal", dept:"R&D", salary:300000,
+ manager:"Smith"}])
+ {
+ }
+ acknowledged: true,
+ insertedIds: {
+ '0': ObjectId("6516eb37ebed3522d31b6586"),
+ '1': ObjectId("6516eb37ebed3522d31b6587"),
+ '2': ObjectId("6516eb37ebed3522d31b6588"),
+ '3': ObjectId("6516eb37ebed3522d31b6589"),
+ '4': ObjectId("6516eb37ebed3522d31b658a")
+ }
+ 1. Find the names of Employees having top 5 highest salaries.
+ dbms> db.employee.find({},{empname:1, _id:0}).sort({salary:-1}).limit(5)
+ [
+ { empname: 'Gael' },
+ { empname: 'komal' },
+ { empname: 'Gayatri' },
+ { empname: 'Joel' },
+ { empname: 'Joe' }
+ ]
+ 2. List the records of employees having Department as “R&D” or Manager as “Smith”.
+ dbms> db.employee.find({$or:[{dept:"R&D"},{manager:"Smith"}]})
+ [
+ {
+ _id: ObjectId("6516ea97ebed3522d31b6583"),
+ empid: 102,
+ empname: 'Joe',
+ dept: 'R&D',
+ salary: 99099,
+ manager: 'Koyal'
+ },
+ {
+_id: ObjectId("6516ea97ebed3522d31b6585"),
+ empid: 103,
+ empname: 'krishna',
+ dept: 'hr',
+ salary: 30000,
+ manager: 'Smith'
+ },
+ {
+ _id: ObjectId("6516eb37ebed3522d31b6588"),
+ empid: 111,
+ empname: 'Gates',
+ dept: 'R&D',
+ salary: 90082,
+ manager: 'Koyal'
+ },
+ {
+ _id: ObjectId("6516eb37ebed3522d31b6589"),
+ empid: 110,
+ empname: 'Harshad',
+ dept: 'R&D',
+ salary: 39090,
+ manager: 'Smith'
+ },
+ {
+ _id: ObjectId("6516eb37ebed3522d31b658a"),
+ empid: 109,
+ empname: 'komal',
+ dept: 'R&D',
+ salary: 300000,
+ manager: 'Smith'
+ }
+ ]
+ 3. Update the salary of Emp_id 100 as 200000.
+ dbms> db.employee.updateOne({empid:100},{$set:{salary:200000}})
+ {
+ acknowledged: true,
+ insertedId: null,
+ matchedCount: 1,
+ modifiedCount: 1,
+ upsertedCount: 0
+ }
+ 4. Delete the record of employee having name as “Josh”
+ dbms> db.employee.deleteOne({empname:"Josh"})
+ { acknowledged: true, deletedCount: 1 }
+ 5. List the Department of employees having a salary less than 50000.
+dbms> db.employee.find({salary:{$lt:50000}},{dept:1, _id:0})
+ [ { dept: 'hr' }, { dept: 'market' }, { dept: 'R&D' } ]
+ Question 3:
+ Create a collection Student with fields as Roll_No, Name, Class, Marks, Address,
+ Enrolled_Courses. (Hint: One student can enrol in multiple courses. Use Array to store the
+ names of courses enrolled) Insert 10 documents in the collection Student.
+ dbms> db.student.insertMany([{rollno:"A2", name:"Komal", class:"TE", marks:69,
+ address:"mumbai", courses: ["DBMS", "TOC"]},{rollno:"A5", name:"Josh", class:"TE",
+ marks:67, address:"mumbai", courses: ["DBMS", "TOC", "CNS", "MATHS"]},{rollno:"A10",
+ name:"Joel", class:"BE", marks:45, address:"mumbai", courses: ["DBMS",
+ "CNS"]},{rollno:"A11", name:"Krisha", class:"TE", marks:55, address:"pune", courses:
+ ["DBMS", "TOC"]},{rollno:"A4", name:"Sandy", class:"TE", marks:66, address:"mumbai",
+ courses: ["DBMS", "MATHS", "CNS"]}])
+ {
+ acknowledged: true,
+ insertedIds: {
+ '0': ObjectId("6516f5a8ebed3522d31b658b"),
+ '1': ObjectId("6516f5a8ebed3522d31b658c"),
+ '2': ObjectId("6516f5a8ebed3522d31b658d"),
+ '3': ObjectId("6516f5a8ebed3522d31b658e"),
+ '4': ObjectId("6516f5a8ebed3522d31b658f")
+ }
+ }
+ dbms> db.student.insertMany([{rollno:"A1", name:"Joe", class:"TE", marks:30,
+ address:"mumbai", courses: ["DBMS", "TOC", "CNS"]}, {rollno:"A17", name:"Kratos",
+ class:"SE", marks:51, address:"pune", courses: ["DBMS", "CNS", "AI",
+ "AR-VR"]},{rollno:"A14", name:"paer", class:"TE", marks:57, address:"mumbai", courses:
+ ["VR", "TOC",]},{rollno:"A16", name:"Pino", class:"SE", marks:37, address:"mumbai",
+ courses: ["DBMS", "TOC", "CNS"]},{rollno:"A13", name:"krames", class:"SE", marks:49,
+ address:"pune", courses: ["DBMS", "TOC", "CNS", "MATHS", "AI"]}])
+ {
+ acknowledged: true,
+ insertedIds: {
+ '0': ObjectId("6516f6b5ebed3522d31b6590"),
+ '1': ObjectId("6516f6b5ebed3522d31b6591"),
+ '2': ObjectId("6516f6b5ebed3522d31b6592"),
+ '3': ObjectId("6516f6b5ebed3522d31b6593"),
+ '4': ObjectId("6516f6b5ebed3522d31b6594")
+ }
+ }
+ Write the queries for Following.
+ 1. List the names of students who have enrolled in the course “DBMS”, “TOC”.
+ dbms> db.student.find({courses: {$all: ['DBMS', 'TOC']}}, {name: 1, _id:0})
+ [
+{ name: 'Komal' },
+ { name: 'Josh' },
+ { name: 'Krisha' },
+ { name: 'Joe' },
+ { name: 'Pino' },
+ { name: 'krames' }
+ ]
+ 2. List the Roll numbers and class of students who have marks more than 50 or class as TE.
+ db.student.find({$or: [{marks: {$gt: 50}}, {class: "TE"}]}, {rollno: 1, class:1, _id:0})
+ [
+ ]
+ { rollno: 'A2', class: 'TE' },
+ { rollno: 'A5', class: 'TE' },
+ { rollno: 'A11', class: 'TE' },
+ { rollno: 'A4', class: 'TE' },
+ { rollno: 'A1', class: 'TE' },
+ { rollno: 'A17', class: 'SE' },
+ { rollno: 'A14', class: 'TE' }
+ 3. Update the entire record of roll_no A10.
+ dbms> db.student.replaceOne({rollno:"A10"},{rollno:"A99", name:"Terminator", class:"XE",
+ marks:99, address:"mars", courses: []})
+ {
+ acknowledged: true,
+ insertedId: null,
+ matchedCount: 1,
+ modifiedCount: 1,
+ upsertedCount: 0
+ }
+ 4. Display the names of students having 3rd and 4th highest marks.
+ dbms> db.student.find({},{name:1,marks:1,_id:0}).sort({marks:-1}).limit(2).skip(2)
+ [ { name: 'Josh', marks: 67 }, { name: 'Sandy', marks: 66 } ]
+ 5. Delete the records of students having marks less than 20.
+ dbms> db.student.deleteMany({marks:{$lt:20}})
+ { acknowledged: true, deletedCount: 0 }
+ 6. Delete only the first record from the collection.
+ dbms> db.student.deleteOne({})
+ { acknowledged: true, deletedCount: 1 }
+ Question 4:
+Create a collection Products with fields as item_id, item_Name, Price, Tags, Status,
+ Quantity. Insert 10 documents in the collection Products.
+ db.createCollection('products')
+ { ok: 1 }
+ db.products.insertMany([{item_id: 102, item_name: "croma ac", price: 30000, tags:
+ ["electronics"], status: "delivered", qty: 50}, {item_id: 100, item_name: "fashionnova", price:
+ 4000, tags: ["clothes"], status: "pending", qty: 90}, {item_id: 111, item_name: "navneet",
+ price: 500, tags: ["stationery", "education", "crafts"], status: "pending", qty: 250}, {item_id:
+ 222, item_name: "zeel raincoats", price: 1500, tags: ["apparels", "monsoon wear", "coats"],
+ status: "delivered", qty: 50}, {item_id: 345, item_name: "kohinoor rice", price: 475, tags:
+ ["grocery", "eatables"], status: "pending", qty: 69}, {item_id: 611, item_name: "h&m denim",
+ price: 4599, tags: ["apparels", "clothing"], qty: 50}])
+ {
+ }
+ acknowledged: true,
+ insertedIds: {
+ '0': ObjectId("65170dbfccfb7eef7c7f9987"),
+ '1': ObjectId("65170dbfccfb7eef7c7f9988"),
+ '2': ObjectId("65170dbfccfb7eef7c7f9989"),
+ '3': ObjectId("65170dbfccfb7eef7c7f998a"),
+ '4': ObjectId("65170dbfccfb7eef7c7f998b"),
+ '5': ObjectId("65170dbfccfb7eef7c7f998c")
+ }
+ Write the queries for the following.
+ 1. List all the products with quantity equal to 50.
+ db.products.find({qty: 50}).pretty()
+ [
+ {
+ _id: ObjectId("65171166dd39a8d50b52e443"),
+ item_id: 102,
+ item_name: 'croma ac',
+ price: 30000,
+ tags: [ 'electronics' ],
+ status: 'delivered',
+ qty: 50
+ },
+ {
+ _id: ObjectId("65171166dd39a8d50b52e446"),
+ item_id: 222,
+ item_name: 'zeel raincoats',
+ price: 1500,
+ tags: [ 'apparels', 'monsoon wear', 'coats' ],
+ status: 'delivered',
+qty: 50
+ },
+ {
+ _id: ObjectId("65171166dd39a8d50b52e448"),
+ item_id: 611,
+ item_name: 'h&m denim',
+ price: 4599,
+ tags: [ 'apparels', 'clothing' ],
+ qty: 50
+ }
+ ]
+ 2. Find all the products having tags as "apparel" or "clothing".
+ db.products.find({$or: [{tags: "apparels"}, {tags: "clothing"}]})
+ [
+ ]
+ {
+ _id: ObjectId("65171334663b92ae86856cc0"),
+ item_id: 222,
+ item_name: 'zeel raincoats',
+ price: 1500,
+ tags: [ 'apparels', 'monsoon wear', 'coats' ],
+ status: 'delivered',
+ qty: 50
+ },
+ {
+ _id: ObjectId("65171334663b92ae86856cc2"),
+ item_id: 611,
+ item_name: 'h&m denim',
+ price: 4599,
+ tags: [ 'apparels', 'clothing' ],
+ qty: 50
+ }
+ 3. Update the record of Item_id 100 with quantity as 100 and tags as tags: [
+ "coats", "outerwear", "clothing" ]
+ db.products.updateOne({item_id: 100}, {$set: {qty: 100, tags: ["coats", "outerwear",
+ "clothing"]}})
+ {
+ acknowledged: true,
+ insertedId: null,
+ matchedCount: 1,
+ modifiedCount: 1,
+ upsertedCount: 0
+ }
+4. Delete only first record from the collection.
+ db.products.deleteOne({})
+ { acknowledged: true, deletedCount: 1 }
+ 5. Delete all records from collection with Status as “Pending”.
+ db.products.deleteMany({status: "pending"})
+ { acknowledged: true, deletedCount: 3 }

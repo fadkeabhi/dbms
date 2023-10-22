@@ -1,0 +1,165 @@
+ASSIGNMENT 8 PHP MySQL 
+INPUT:
+home_page.php
+ <!DOCTYPE html>
+<html>
+<head>
+    <title>insert records</title>
+</head>
+<body>
+<div class="row text-center">
+    <div class="container">
+        <h1>Insert Employee Information</h1>
+    <form action="home_page.php" method="post">
+    <b> Employee_id:     </b> <input type="text" name="emp_id" placeholder="Insert Employee ID"><br><br>
+    <b> Employee Name:    </b><input type="text" name="emp_name" placeholder="Insert Employee Name"><br><br>
+    <b> Employee Salary :                 </b><input type="text" name="emp_salary" placeholder="Insert Employee Salary"><br><br>
+    <b> Employee Manager:     </b><input type="text" name="emp_mng" placeholder="Insert Employee Manager"><br><br>
+    <input type="submit" name="submit" value="Insert Employee Record"><br><br>
+    </form>
+<button><a href="show_record.php">Show Employee Records</a></button>
+    </div>
+</div>
+</body>
+</html>
+<?php
+error_reporting(0);
+include 'db_connection.php';
+if (isset($_POST['submit'])) {
+    $emp_id = $_POST['emp_id'];
+    $emp_name = $_POST['emp_name'];
+    $emp_salary = $_POST['emp_salary'];
+    $emp_mng = $_POST['emp_mng'];
+    $sql = "INSERT INTO `employee` VALUES ('$emp_id','$emp_name','$emp_salary','$emp_mng')";
+    $data=mysqli_query($con,$sql);
+    if ($data) {
+        echo "Employee Record Inserted Sucessfully";
+    }else
+    {
+        echo "Record Could not be inserted. Some Error Occured";
+    }
+}
+?>
+Show_records.php  
+<!DOCTYPE html>
+<html>
+<head>
+    <title>show records</title>
+</head>
+<body>
+<?php
+include ('db_connection.php');
+$sql ="select * from employee";
+$data =mysqli_query($con,$sql);
+$total=mysqli_num_rows($data);
+if ($total=mysqli_num_rows($data)) {
+?>
+    <table border="2">
+<tr>
+<th>Employee ID</th>
+<th>Employee Name</th>
+<th>Employee Salary</th>
+<th>Employee Manager</th>
+<th>Update Record</th>
+<th>Delete Record</th>
+</tr>
+    <?php
+    while ($result = mysqli_fetch_array($data)) {
+        echo "
+            <tr>
+                <td>".$result['emp_id']."</td>
+                <td>".$result['emp_name']."</td>
+                <td>".$result['emp_salary']."</td>
+                <td>".$result['emp_mng']."</td>
+                <td><a href='update_record.php?emp_id=$result[emp_id] & emp_name=$result[emp_name] & emp_salary=$result[emp_salary] & emp_mng=$result[emp_mng]'> Update </a></td>
+                <td><a href='delete_record.php?emp_id=$result[emp_id] '>Delete </a></td>
+            </tr>
+        ";
+    }
+}
+else
+{
+    echo "no record found";
+}
+?>
+</table>
+</body>
+</html>
+Update.php 
+<?php
+error_reporting(0);
+include ('db_connection.php');
+$curr_emp_id=$_GET['emp_id'];
+if ($_POST['submit'])
+{
+    $employee_id = $curr_emp_id;
+    $employee_name = $_POST['employee_name'];
+    $employee_salary = $_POST['employee_salary'];
+    $employee_mng = $_POST['employee_mng'];
+    $sql="UPDATE employee SET emp_name='$employee_name', emp_salary='$employee_salary' , emp_mng='$employee_mng',  WHERE emp_id='$employee_id';";
+    $data=mysqli_query($con, $sql);
+    if ($data) {
+        echo "Record Updated Successfully";
+        header('location:show_record.php');
+    }
+    else{
+        echo "Record is not updated";
+         header('location:show_record.php');
+    }
+}
+else
+{
+    echo "Click on  button to save the changes";
+}
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>update</title>
+</head>
+<body>
+<form action="" method="POST">
+    <label><?php echo $curr_emp_id;?></label><br><br>
+    <input type="text" name="employee_name" placeholder="Enter Employee Name" value="<?php echo $_GET['emp_name']; ?>" ><br><br>
+    <input type="text" name="employee_salary" placeholder="Enter Employee Salary" value="<?php echo $_GET['emp_salary']; ?>"><br><br>
+    <input type="text" name="employee_mng" placeholder="Enter Employee Manager" value="<?php echo $_GET['emp_mng']; ?>"><br><br>
+    <input type="submit" name="submit" value="Update Record">
+</form>
+</body>
+</html>
+Delete_record.php
+<?php
+include ('db_connection.php');
+$id = $_GET['emp_id'];
+$sql ="DELETE FROM `employee` WHERE emp_id='$id'";
+$data = mysqli_query($con,$sql);
+if ($data) {
+    echo "deleted";
+    header('location:show_record.php');
+}else
+{
+    echo "error";
+}
+ ?> 
+Db_connection.php
+<?php
+include ('db_connection.php');
+$id = $_GET['emp_id'];
+$sql ="DELETE FROM `employee` WHERE emp_id='$id'";
+$data = mysqli_query($con,$sql);
+if ($data) {
+    echo "deleted";
+    header('location:show_record.php');
+}else
+{
+    echo "error";
+}
+ ?>
+
+OUTPUT:
+ 
+
+ 
+  
+ 
+

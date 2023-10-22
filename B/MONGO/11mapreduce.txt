@@ -1,0 +1,163 @@
+Q1. Create Post Collection with (post_text, user_name, status) as fields. Display user wise
+ no. of posts having “Active’ status
+ db.post.insertMany([{post_text: 'whatt', user_name: 'monik_r', status: 'Active'}, {post_text:
+ 'wowww', user_name: 'sanjhari_s', status: 'Active'}, {post_text: 'yay', user_name:
+ 'anushka_s', status: 'Unactive'},{post_text: 'yowzie', user_name: 'anirudh_n', status:
+ 'Unactive'}, {post_text: 'nice onli', user_name: 'aditi_v', status: 'Active'}, {post_text: 'hii',
+ user_name: 'tanvi_r', status: 'Unactive'}, {post_text: 'cause why not', user_name: 'pritish_v',
+ status: 'Active'}, {post_text: 'hein', user_name: 'divyam_s', status: 'Unactive'}])
+ {
+ acknowledged: true,
+ insertedIds: {
+ '0': ObjectId("6524edf3d4f376920056f7f1"),
+ '1': ObjectId("6524edf3d4f376920056f7f2"),
+ '2': ObjectId("6524edf3d4f376920056f7f3"),
+ '3': ObjectId("6524edf3d4f376920056f7f4"),
+ '4': ObjectId("6524edf3d4f376920056f7f5"),
+ '5': ObjectId("6524edf3d4f376920056f7f6"),
+ '6': ObjectId("6524edf3d4f376920056f7f7"),
+ '7': ObjectId("6524edf3d4f376920056f7f8")
+ }
+ }
+ db.post.insertOne({post_text: 'sup', user_name: 'monik_r', status: 'Active'})
+ {
+ acknowledged: true,
+ insertedId: ObjectId("6524faca9cbb4a752b8eb279")
+ }
+ var mpfun= function() {var key= this.user_name; var value= {count: 1}; emit(key, value);};
+ var rdfun=function(key,values){var rdobj={count: 0}; values.forEach(function(value)
+ {rdobj.count+=value.count;}); return rdobj;};
+ db.post.mapReduce( mpfun, rdfun, {query: {status: "Active"}, out:"active"})
+ { result: 'active', ok: 1 }
+ sanjhari> db.active.find()
+ [
+ { _id: 'sanjhari_s', value: { count: 1 } },
+ { _id: 'aditi_v', value: { count: 1 } },
+ { _id: 'monik_r', value: { count: 2 } },
+ { _id: 'pritish_v', value: { count: 1 } }
+ ]
+Q2. Create Book Collection with (Title, Author_name, Borrowed_status) as
+ Fields.
+ test> db.book.insertMany([{ title: 'DBMS', author: 'John', borrowed: true }, { title: 'KGF',
+ author: 'Kiran', borrowed: true }, { title: 'TOC', author: 'James', borrowed: true }, { title:
+ 'DataBig', author: 'John', borrowed: true }, { title: 'DSA', author: 'John', borrowed: false }] )
+ {
+ acknowledged: true,
+ insertedIds: {
+ '0': ObjectId("65254e984211f535bce1d92f"),
+ '1': ObjectId("65254e984211f535bce1d930"),
+ '2': ObjectId("65254e984211f535bce1d931"),
+ '3': ObjectId("65254e984211f535bce1d932"),
+ '4': ObjectId("65254e984211f535bce1d933")
+ }
+ }
+ test> db.book.insertMany([{ title: 'Ddeprecated', author: 'John', borrowed:false }, { title:
+ 'GoGoJOJO', author: 'Kiran', borrowed: true }, { title: 'StopLookGo', author: 'James',
+ borrowed: true }, { title: 'MP', author: 'Kiran', borrowed: true }, { title: 'DSAL', author: 'James',
+ borrowed: false }] )
+ {
+ }
+ acknowledged: true,
+ insertedIds: {
+ '0': ObjectId("65254efa4211f535bce1d934"),
+ '1': ObjectId("65254efa4211f535bce1d935"),
+ '2': ObjectId("65254efa4211f535bce1d936"),
+ '3': ObjectId("65254efa4211f535bce1d937"),
+ '4': ObjectId("65254efa4211f535bce1d938")
+ }
+ I. Display Author wise list of books.
+ test> db.book.mapReduce(function(){emit(this.author, this.title);},function(key, values){return
+ Array(values)},{out:"Q2O1"})
+ { result: 'Q2O1', ok: 1 }
+ test> db.Q2O1.find();
+ [
+ { _id: 'Kiran', value: [ [ 'MP', 'GoGoJOJO', 'KGF' ] ] },
+ { _id: 'James', value: [ [ 'DSAL', 'StopLookGo', 'TOC' ] ] },
+ {
+ _id: 'John',
+ value: [ [ 'Ddeprecated', 'DSA', 'DataBig', 'DBMS' ] ]
+ }
+ ]
+ II. Display Author wise list of books having Borrowed status”True”.
+test> db.book.mapReduce(function(){emit(this.author, this.title);},function(key, values){return
+ Array(values)},{query:{borrowed:true},out:"Q2O1"})
+ { result: 'Q2O1', ok: 1 }
+ test> db.Q2O1.find();
+ [
+ { _id: 'Kiran', value: [ [ 'MP', 'GoGoJOJO', 'KGF' ] ] },
+ { _id: 'James', value: [ [ 'StopLookGo', 'TOC' ] ] },
+ { _id: 'John', value: [ [ 'DataBig', 'DBMS' ] ] }
+ ]
+ Q3. Create Purchase_orders Collection with (Customer_id, Amount, Status) as
+ Fields.
+ test> db.purchase_orders.insertMany([{customer_id:"monik_r",amount:890,
+ status:'A'},{customer_id:"sanjhari_s",amount:3680,
+ status:'A'},{customer_id:"monik_r",amount:1990,
+ status:'A'},{customer_id:"monik_r",amount:90, status:'D'},
+ {customer_id:"monik_r",amount:1299, status:'A'},{customer_id:"sanjhari_s",amount:8762.56,
+ status:'A'},{customer_id:"monik_r",amount:239.45, status:'A'}])
+ {
+ acknowledged: true,
+ insertedIds: {
+ '0': ObjectId("652551be4211f535bce1d939"),
+ '1': ObjectId("652551be4211f535bce1d93a"),
+ '2': ObjectId("652551be4211f535bce1d93b"),
+ '3': ObjectId("652551be4211f535bce1d93c"),
+ '4': ObjectId("652551be4211f535bce1d93d"),
+ '5': ObjectId("652551be4211f535bce1d93e"),
+ '6': ObjectId("652551be4211f535bce1d93f")
+ }
+ }
+ 1. Display customer wise total purchase amount having “Active” status.
+ test> db.purchase_orders.mapReduce(function(){emit(this.customer_id,
+ this.amount);},function(key, values){return Array.sum(values)},{query:{status:'A'}, out:"Q3"})
+ { result: 'Q3', ok: 1 }
+ test> db.Q3.find()
+ [
+ { _id: 'monik_r', value: 4418.45 },
+ { _id: 'sanjhari_s', value: 12442.56 }
+ ]
+ Q4. Consider a PersonalInfo collection having the following fields.
+ id, Name(FirstName, LastName), Email, Profession, Age, Gender, Income, Hobbies.
+ test> db.personal_info.insertMany([{id:99,name:"James", email:"jam@gmail",
+ profession:"SoftwareEngineer", Age:24, gender:'M', income:345224},{id:98,name:"Sakshi",
+ email:"sss@gmail", profession:"Designer", Age:19, gender:'F',
+ income:99254},{id:112,name:"Parota", email:"jkkk@gmail", profession:"ProductDesign",
+Age:32, gender:'M', income:677789},{id:111,name:"Komal", email:"kam@gmail",
+ profession:"SoftwareEngineer", Age:20, gender:'F', income:348924},{id:100,name:"Jason",
+ email:"jam@gmail", profession:"SoftwareEngineer", Age:28, gender:'M',
+ income:466546},{id:101,name:"Jaeko", email:"jko@gmail", profession:"SoftwareLead",
+ Age:21, gender:'F', income:909877}])
+ {
+ acknowledged: true,
+ insertedIds: {
+ '0': ObjectId("652554154211f535bce1d940"),
+ '1': ObjectId("652554154211f535bce1d941"),
+ '2': ObjectId("652554154211f535bce1d942"),
+ '3': ObjectId("652554154211f535bce1d943"),
+ '4': ObjectId("652554154211f535bce1d944"),
+ '5': ObjectId("652554154211f535bce1d945")
+ }
+ }
+ Write Map Reduce Functions for the following requirements.
+ 1. Get the count of Males and Females
+ test> var mapfun=function(){var key=this.gender; var value={count:1}; emit(key, value);};
+ test> var redfun=function(key, values){var reddoc={count:0}; values.forEach(function(value)
+ {reddoc.count+=value.count;}); return reddoc;};
+ test> db.personal_info.mapReduce(mapfun, redfun, {out:"Q4O1"})
+ { result: 'Q4O1', ok: 1 }
+ test> db.Q4O1.find()
+ [
+ { _id: 'M', value: { count: 3 } },
+ { _id: 'F', value: { count: 3 } }
+ ]
+ 2. Get the Eldest and Youngest Person in each gender
+ test> db.personal_info.mapReduce(function(){emit(this.gender, this.Age);}, function(key,
+ values){var result={min:0, max:0}; result.min = Math.min.apply(Math, values);
+ result.max=Math.max.apply(Math, values); return result;}, {out:"Q4O2"})
+ { result: 'Q4O2', ok: 1 }
+ test> db.Q4O2.find()
+ [
+ { _id: 'F', value: { min: 19, max: 21 } },
+ { _id: 'M', value: { min: 24, max: 32 } }
+ ]

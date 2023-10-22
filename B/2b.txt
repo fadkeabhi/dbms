@@ -1,0 +1,551 @@
+Question 1: 
+Create the Employee table using following schema
+Employee (Employee_id, First_name, Last_name, Salary, Joining_date, Department)
+
+1.	Insert 10 to 15 appropriate records in the Employee table.
+mysql> select * from employee;
++------------+------------+--------+--------------+------------+-------------+
+| employeeid | first_name | salary | joining_date | department | last_name   |
++------------+------------+--------+--------------+------------+-------------+
+|         11 | jay        |   8000 | 2013-10-21   | hr         | Shah        |
+|         14 | jonu       |   8090 | 2012-08-09   | mkt        | Patil       |
+|         18 | raju       |  45789 | 2011-09-09   | sales      | Patil       |
+|         20 | Ketan      |  90000 | 2021-09-06   | mkt        | Wagh        |
+|         24 | Chetan     |  45000 | 2018-02-19   | hr         | Patel       |
+|          4 | Ashlesha    |  66990 | 2015-04-29   | accounts   | Patel       |
+|          2 | Ajan      |  89990 | 2012-06-11   | accounts   | Shrinivasan |
+|         28 | Kishore    |  19000 | 2019-12-12   | mkt        | Bhide       |
++------------+------------+--------+--------------+------------+-------------+
+8 rows in set (0.00 sec)
+
+2.	Get First_Name,Last_Name from employee table
+mysql> select first_name, last_name from employee;
++------------+-------------+
+| first_name | last_name   |
++------------+-------------+
+| jay        | Shah        |
+| jonu       | Patil       |
+| raju       | Patil       |
+| Ketan      | Wagh        |
+| Chetan     | Patel       |
+| Ashlesha    | Patel       |
+| Ajan      | Shrinivasan |
+| Kishore    | Bhide       |
++------------+-------------+
+8 rows in set (0.00 sec)
+
+3.	Get unique DEPARTMENT from employee table
+mysql> select distinct department from employee;
++------------+
+| department |
++------------+
+| hr         |
+| mkt        |
+| sales      |
+| accounts   |
++------------+
+4 rows in set (0.01 sec)
+
+4.	Get FIRST_NAME, Joiningyear, Joining Month and Joining Date from employee table
+mysql> select first_name, (select YEAR(joining_date)) as year, (select MONTH(joining_date)) as month, DAY(joining_date) as day from
+employee;
++------------+------+-------+------+
+| first_name | year | month | day  |
++------------+------+-------+------+
+| jay        | 2013 |    10 |   21 |
+| jonu       | 2012 |     8 |    9 |
+| raju       | 2011 |     9 |    9 |
+| Ketan      | 2021 |     9 |    6 |
+| Chetan     | 2018 |     2 |   19 |
+| Ashlesha    | 2015 |     4 |   29 |
+| Ajan      | 2012 |     6 |   11 |
+| Kishore    | 2019 |    12 |   12 |
++------------+------+-------+------+
+8 rows in set (0.00 sec)
+
+5.	Get all employee details from the employee table order by Salary Ascending
+mysql> select * from employee order by salary;
++------------+------------+--------+--------------+------------+-------------+
+| employeeid | first_name | salary | joining_date | department | last_name   |
++------------+------------+--------+--------------+------------+-------------+
+|         11 | jay        |   8000 | 2013-10-21   | hr         | Shah        |
+|         14 | jonu       |   8090 | 2012-08-09   | mkt        | Patil       |
+|         28 | Kishore    |  19000 | 2019-12-12   | mkt        | Bhide       |
+|         24 | Chetan     |  45000 | 2018-02-19   | hr         | Patel       |
+|         18 | raju       |  45789 | 2011-09-09   | sales      | Patil       |
+|          4 | Ashlesha    |  66990 | 2015-04-29   | accounts   | Patel       |
+|          2 | Ajan      |  89990 | 2012-06-11   | accounts   | Shrinivasan |
+|         20 | Ketan      |  90000 | 2021-09-06   | mkt        | Wagh        |
++------------+------------+--------+--------------+------------+-------------+
+8 rows in set (0.00 sec)
+
+6.	Get all employee details from the employee table whose First_Name starts with A.
+mysql> select * from employee where first_name like 'A%';
++------------+------------+--------+--------------+------------+-------------+
+| employeeid | first_name | salary | joining_date | department | last_name   |
++------------+------------+--------+--------------+------------+-------------+
+|          4 | Ashlesha   |  66990 | 2015-04-29   | accounts   | Patel       |
+|          2 | Ajan       |  89990 | 2012-06-11   | accounts   | Shrinivasan |
++------------+------------+--------+--------------+------------+-------------+
+2 rows in set (0.01 sec)
+
+7.	Update the Salary column by incrementing salary of all employees having salary less than 20000 by 5000.
+mysql> update employee set salary=salary+5000 where salary<20000;
+Query OK, 3 rows affected (0.01 sec)
+Rows matched: 3  Changed: 3  Warnings: 0
+mysql> select * from employee;
++------------+------------+--------+--------------+------------+-------------+
+| employeeid | first_name | salary | joining_date | department | last_name   |
++------------+------------+--------+--------------+------------+-------------+
+|         11 | jay        |  13000 | 2013-10-21   | hr         | Shah        |
+|         14 | jonu       |  13090 | 2012-08-09   | mkt        | Patil       |
+|         18 | raju       |  45789 | 2011-09-09   | sales      | Patil       |
+|         20 | Ketan      |  90000 | 2021-09-06   | mkt        | Wagh        |
+|         24 | Chetan     |  45000 | 2018-02-19   | hr         | Patel       |
+|          4 | Ashlesha   |  66990 | 2015-04-29   | accounts       | Patel       |
+|          2 | Ajan       |  89990 | 2012-06-11   | accounts   | Shrinivasan |
+|         28 | Kishore    |  24000 | 2019-12-12   | mkt        | Bhide       |
++------------+------------+--------+--------------+------------+-------------+
+
+8.	Delete the record of employee no 004.     
+mysql> delete from employee where employeeid=004;
+Query OK, 1 row affected (0.02 sec)
+
+9.	Find department wise min salary.
+mysql> select department, min(salary) as minimum_salary from employee group by department;
++------------+----------------+
+| department | minimum_salary |
++------------+----------------+
+| hr         |          13000 |
+| mkt        |          13090 |
+| sales      |          45789 |
+| accounts   |          89990 |
++------------+----------------+
+4 rows in set (0.00 sec)
+
+10.	Find department wise Average salary in ascending order.
+mysql> select department, avg(salary) as Average_Pay from employee group by department order by Average_Pay;
++------------+-------------+
+| department | Average_Pay |
++------------+-------------+
+| hr         |  29000.0000 |
+| mkt        |  42363.3333 |
+| sales      |  45789.0000 |
+| accounts   |  89990.0000 |
++------------+-------------+
+4 rows in set (0.00 sec)
+
+
+Consider Following Schema
+Employee(employee_id, employee_name, City, Company_Name, Salary)
+mysql> select * from employee;
++-------------+---------------+----------+--------------+---------+
+| employee_id | employee_name | city     | company_name | salary  |
++-------------+---------------+----------+--------------+---------+
+|          45 | Monik         | PUNE     | IBM          | 5689654 |
+|          46 | SANJHARI      | MUMBAI   | IBM          | 6789983 |
+|          47 | DIVYAM        | NAGPUR   | INFOSYS      |   25090 |
+|          48 | PRITISH       | PUNE     | SYSCO        |   38900 |
+|          49 | ANIRUDH       | MUMBAI   | INFOSYS      |   90900 |
+|          50 | ANUSHKA       | MUMBAI   | IBM          |   89000 |
+|          51 | RAJ           | MUMBAI   | GOOGLE       | 6777790 |
+|          52 | JAY           | BANGLORE | APPLE        | 9098804 |
++-------------+---------------+----------+--------------+---------+
+8 rows in set (0.00 sec)
+
+11.	Find details of all employees who work for company “IBM” and live in city “Pune”.
+mysql> select * from employee where company_name='IBM' AND city='PUNE';
++-------------+---------------+------+--------------+---------+
+| employee_id | employee_name | city | company_name | salary  |
++-------------+---------------+------+--------------+---------+
+|          45 | Monik         | PUNE | IBM          | 5689654 |
++-------------+---------------+------+--------------+---------+
+1 row in set (0.03 sec)
+
+12.	Find names, and cities of all employees who work for “Infosys” or earn more than 30000.
+mysql> select employee_name, city from employee where company_name='INFOSYS' OR salary>30000;
++---------------+----------+
+| employee_name | city     |
++---------------+----------+
+| Monik         | PUNE     |
+| SANJHARI      | MUMBAI   |
+| DIVYAM        | NAGPUR   |
+| PRITISH       | PUNE     |
+| ANIRUDH       | MUMBAI   |
+| ANUSHKA       | MUMBAI   |
+| RAJ           | MUMBAI   |
+| JAY           | BANGLORE |
++---------------+----------+
+8 rows in set (0.00 sec)
+
+13.	Find all employees who are employees of “IBM” and not living in city “Mumbai”.
+mysql> select * from employee where company_name='IBM' AND city!='MUMBAI';
++-------------+---------------+------+--------------+---------+
+| employee_id | employee_name | city | company_name | salary  |
++-------------+---------------+------+--------------+---------+
+|          45 | Monik         | PUNE | IBM          | 5689654 |
++-------------+---------------+------+--------------+---------+
+1 row in set (0.01 sec)
+
+
+14.	Find company wise maximum salary
+mysql> select company_name, max(salary) as max_pay from employee group by company_name;
++--------------+---------+
+| company_name | max_pay |
++--------------+---------+
+| IBM          | 6789983 |
+| INFOSYS      |   90900 |
+| SYSCO        |   38900 |
+| GOOGLE       | 6777790 |
+| APPLE        | 9098804 |
++--------------+---------+
+5 rows in set (0.01 sec)
+
+15.	Find those companies whose employees earn higher salary, than average salary at “IBM”.
+mysql> select company_name from employee where company_name!='IBM' AND salary>(select avg(salary) from employee where
+ company_name='IBM');
++--------------+
+| company_name |
++--------------+
+| GOOGLE       |
+| APPLE        |
++--------------+
+2 rows in set (0.01 sec)
+
+ii) Create the tables using following schema:
+Patient (pid, pname, age,Bloodgrp,city,gender,email )
+Doctor(Did, Dname, Specialization, salary, workexp)
+Treats(Did, pid, illness, fees)
+Admitted(pid,Wardtype, No_of_days)
+
+mysql> select * from patient;
++-----+--------+------+----------+----------+--------+----------------+
+| pid | pname  | age  | bloodgrp | city     | gender | email          |
++-----+--------+------+----------+----------+--------+----------------+
+|   1 | raju   |    9 | AB+      | mumbai   | male   | NULL           |
+|   2 | ram    |   17 | B+       | pune     | male   | ram56@yahoo    |
+|   4 | krisha |   26 | O+       | surat    | female | krisha56@gmail |
+|   5 | rucha  |   58 | AB-      | delhi    | female | ruch99@hotmail |
+|   6 | pia    |    8 | O-       | amravati | female | NULL           |
+|   9 | renita |   39 | O+       | badlapur | female | NULL           |
+|  11 | smita  |   20 | O+       | borivali | female | smitag@gmail   |
++-----+--------+------+----------+----------+--------+----------------+
+7 rows in set (0.01 sec)
+
+mysql> select * from doctor;
++-----+----------+----------------+--------+---------+
+| did | dname    | specialization | salary | workexp |
++-----+----------+----------------+--------+---------+
+| 101 | arti     | brain          |  30000 |       5 |
+| 102 | james    | cardiologist   |  59000 |      11 |
+| 103 | kritu    | eye            |  89000 |      14 |
+| 104 | joshua   | heart          |  60000 |       6 |
+| 105 | anirudh  | cardiologist   |  99000 |      17 |
+| 108 | sharmati | eye            |  45000 |      12 |
+| 109 | shreeman | brain          | 105000 |      21 |
++-----+----------+----------------+--------+---------+
+7 rows in set (0.00 sec)
+
+mysql> select * from treats;
++------+------+--------------+--------+
+| did  | pid  | illness      | fees   |
++------+------+--------------+--------+
+|  108 |    2 | eyestrain    |   4589 |
+|  104 |    4 | attack       |  89000 |
+|  109 |    6 | brain damage | 109000 |
+|  109 |    9 | brain clot   |  36890 |
+|  101 |   11 | eyestrain    |   8990 |
+|  105 |    5 | attack       |  99090 |
+|  101 |   11 | asthama      |   8090 |
+|  102 |    1 | tumor        |   2000 |
++------+------+--------------+--------+
+8 rows in set (0.00 sec)
+
+mysql> select * from admitted;
++------+-----------+------------+
+| pid  | wardtype  | no_of_days |
++------+-----------+------------+
+|    1 | general   |          1 |
+|   11 | intensive |         14 |
+|    4 | general   |          4 |
+|    5 | emergency |          2 |
+|    6 | emergency |          1 |
+|    9 | general   |          7 |
++------+-----------+------------+
+6 rows in set (0.00 sec)
+
+1)	In treats table for foreign key did set option on delete cascade and on update cascade and for pid on delete set null.
+mysql> alter table treats add foreign key(did) references doctor(did) on delete cascade on update cascade;
+Query OK, 0 rows affected (0.31 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table treats add foreign key(pid) references patient(pid) on delete set null;
+Query OK, 0 rows affected (0.20 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+2.) a.) Display name of doctors and patients in a single column
+     b.) Let duplicate names appear as many times as they are in the table.
+mysql> select d.dname, p.pname from doctor d, patient p, treats t where d.did=t.did and p.pid=t.pid;
++----------+--------+
+| dname    | pname  |
++----------+--------+
+| sharmati | ram    |
+| joshua   | krisha |
+| shreeman | pia    |
+| shreeman | renita |
+| arti     | smita  |
+| anirudh  | rucha  |
+| arti     | smita  |
+| james    | raju   |
++----------+--------+
+8 rows in set (0.00 sec)
+
+3.) Display age of oldest patient.
+mysql> select age from patient where age=(select max(age) from patient);
++------+
+| age  |
++------+
+|   58 |
++------+
+1 row in set (0.02 sec)
+
+4.) What is least salary drawn by any doctor.
+mysql> select salary from doctor where salary=(select min(salary) from doctor);
++--------+
+| salary |
++--------+
+|  30000 |
++--------+
+1 row in set (0.01 sec)
+
+
+
+
+5.) How many patients are registered in the hospital.
+mysql> select count(*) as patients_count from patient;
++----------------+
+| patients_count |
++----------------+
+|              8 |
++----------------+
+1 row in set (0.02 sec)
+
+6.) What is the total money collected so far from treatment of patients.
+mysql> select sum(fees) as total_earn from treats;
++------------+
+| total_earn |
++------------+
+|     357649 |
++------------+
+1 row in set (0.00 sec)
+
+7.) Display patients name ending with ta.	
+mysql> select pname from patient where pname like '%ta';
++--------+
+| pname  |
++--------+
+| renita |
+| smita  |
++--------+
+2 rows in set (0.00 sec)
+
+8.) Display doctors name starting with s having exactly 8 characters in all.
+mysql> select dname from doctor where dname like 's_______';
++----------+
+| dname    |
++----------+
+| sharmati |
+| shreeman |
++----------+
+2 rows in set (0.00 sec)
+
+9.) Find avg salary of each dept along with specialization.
+mysql> select specialization, avg(salary) from doctor group by specialization;
++----------------+-------------+
+| specialization | avg(salary) |
++----------------+-------------+
+| brain          |  67500.0000 |
+| cardiologist   |  79000.0000 |
+| eye            |  67000.0000 |
+| heart          |  60000.0000 |
++----------------+-------------+
+4 rows in set (0.01 sec)
+
+10.) Display deptname whose avg workexp of doctors is above 10 years.
+mysql> select specialization, avg(workexp) from doctor group by specialization having avg(workexp)>10;
++----------------+--------------+
+| specialization | avg(workexp) |
++----------------+--------------+
+| brain          |      13.0000 |
+| cardiologist   |      14.0000 |
+| eye            |      13.0000 |
++----------------+--------------+
+3 rows in set (0.00 sec)
+
+11.) Display patients name and their blood group who have age in range of 16 to40.
+mysql> select pname, bloodgrp from patient where age between 16 and 40;
++--------+----------+
+| pname  | bloodgrp |
++--------+----------+
+| ram    | B+       |
+| krisha | O+       |
+| renita | O+       |
+| smita  | O+       |
++--------+----------+
+4 rows in set (0.00 sec)
+
+12.) Display doctors name ,salary who is a cardiologist.
+mysql> select dname, salary from doctor where specialization='cardiologist';
++---------+--------+
+| dname   | salary |
++---------+--------+
+| james   |  59000 |
+| anirudh |  99000 |
++---------+--------+
+2 rows in set (0.00 sec)
+
+13.) Display patient name and gender suffering from eyestrain.
+mysql> select pname, gender from patient where pid in(select pid from treats where illness='eyestrain');
++-------+--------+
+| pname | gender |
++-------+--------+
+| ram   | male   |
+| smita | female |
++-------+--------+
+2 rows in set (0.02 sec)
+
+
+14.) Display eyestrain patient name and their doctors name.
+mysql> select pname, dname from patient, doctor where pid in(select pid from treats where illness='eyestrain') and did in(select did from treats where illness='eyestrain');
++-------+----------+
+| pname | dname    |
++-------+----------+
+| smita | arti     |
+| ram   | arti     |
+| smita | sharmati |
+| ram   | sharmati |
++-------+----------+
+4 rows in set (0.00 sec)
+
+15.) Remove records of doctor James and see effect on treats table.
+mysql> delete from doctor where dname='james';
+Query OK, 1 row affected (0.03 sec)
+
+*row containing ‘JAMES’ is deleted in treats table too* see below:
+mysql> select * from treats;
++------+------+--------------+--------+
+| did  | pid  | illness      | fees   |
++------+------+--------------+--------+
+|  108 |    2 | eyestrain    |   4589 |
+|  104 |    4 | attack       |  89000 |
+|  109 |    6 | brain damage | 109000 |
+|  109 |    9 | brain clot   |  36890 |
+|  101 |   11 | eyestrain    |   8990 |
+|  105 |    5 | attack       |  99090 |
+|  101 |   11 | asthama      |   8090 |
++------+------+--------------+--------+
+7 rows in set (0.00 sec)
+
+16.) Remove records for a certain patient and see effect in treats table.
+mysql> delete from patient where pid=11;
+Query OK, 1 row affected (0.03 sec)
+*On delete set null option was set*
+mysql> select * from treats;
++------+------+--------------+--------+
+| did  | pid  | illness      | fees   |
++------+------+--------------+--------+
+|  108 |    2 | eyestrain    |   4589 |
+|  104 |    4 | attack       |  89000 |
+|  109 |    6 | brain damage | 109000 |
+|  109 |    9 | brain clot   |  36890 |
+|  101 | NULL | eyestrain    |   8990 |
+|  105 |    5 | attack       |  99090 |
+|  101 | NULL | asthama      |   8090 |
++------+------+--------------+--------+
+7 rows in set (0.02 sec)
+
+17.)Change salary of Dr arti by 50,000/-
+mysql> update doctor set salary=50000 where dname='arti';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+18.) While displaying contents of treat table change the following-if the illness is attack change to heart attack if eyestrain change to cornea and rest keep it as it is.
+
+mysql> Select did, pid, CASE WHEN INSTR(illness,'attack')>0 THEN CONCAT('heart ', illness) when INSTR(illness, 'eyestrain')>0 then replace(illness,'eyestrain','cornea') else illness end as illness, fees from treats;
++------+------+--------------+--------+
+| did  | pid  | illness      | fees   |
++------+------+--------------+--------+
+|  108 |    2 | cornea       |   4589 |
+|  104 |    4 | heart attack |  89000 |
+|  109 |    6 | brain damage | 109000 |
+|  109 |    9 | brain clot   |  36890 |
+|  101 | NULL | cornea       |   8990 |
+|  105 |    5 | heart attack |  99090 |
+|  101 | NULL | asthama      |   8090 |
++------+------+--------------+--------+
+7 rows in set (0.01 sec)
+
+19.) Give 5% rise to doctor's salary if their salary is<80,000/- and 2% otherwise.
+mysql> update doctor set salary=CASE when salary<80000 then (salary+salary*5/100) ELSE (salary+salary*2/100) END;
+Query OK, 6 rows affected (0.18 sec)
+Rows matched: 6  Changed: 6  Warnings: 0
+
+mysql> select * from doctor;
++-----+----------+----------------+--------+---------+
+| did | dname    | specialization | salary | workexp |
++-----+----------+----------------+--------+---------+
+| 101 | arti     | brain          |  52500 |       5 |
+| 103 | kritu    | eye            |  90780 |      14 |
+| 104 | joshua   | heart          |  63000 |       6 |
+| 105 | anirudh  | cardiologist   | 100980 |      17 |
+| 108 | sharmati | eye            |  47250 |      12 |
+| 109 | shreeman | brain          | 107100 |      21 |
++-----+----------+----------------+--------+---------+
+6 rows in set (0.01 sec)
+
+20.) Print general ward patients name.
+mysql> SELECT pname from patient where pid in(select pid from admitted where wardtype='general');
++--------+
+| pname  |
++--------+
+| raju   |
+| krisha |
+| renita |
++--------+
+3 rows in set (0.06 sec)
+
+21.)Change admitted table into room
+mysql> rename table admitted to room;
+Query OK, 0 rows affected (0.41 sec)
+
+22.) Print the patient name and bg who donot have emailids.
+mysql> select pname, bloodgrp from patient where email is null;
++--------+----------+
+| pname  | bloodgrp |
++--------+----------+
+| raju   | AB+      |
+| pia    | O-       |
+| renita | O+       |
++--------+----------+
+3 rows in set (0.01 sec)
+
+23.) update doctor table field and see its effect on treats table.
+mysql> update doctor set dname='aradhya',did=111 where did=105;
+Query OK, 1 row affected (0.04 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from treats;
++------+------+--------------+--------+
+| did  | pid  | illness      | fees   |
++------+------+--------------+--------+
+|  108 |    2 | eyestrain    |   4589 |
+|  104 |    4 | attack       |  89000 |
+|  109 |    6 | brain damage | 109000 |
+|  109 |    9 | brain clot   |  36890 |
+|  101 | NULL | eyestrain    |   8990 |
+|  111 |    5 | attack       |  99090 |
+|  101 | NULL | asthama      |   8090 |
++------+------+--------------+--------+
+7 rows in set (0.01 sec)
+
+<*did changed from 105 to 111, effect of this was the change noted on row number 6 of treats table*>

@@ -1,0 +1,62 @@
+QUESTION 1:
+INPUT:
+DECLARE 
+CURSOR MERGE_CURSOR IS SELECT * FROM N_ROLLCALL;
+BEGIN 
+    FOR TMP IN MERGE_CURSOR
+    LOOP
+    MERGE INTO N_ROLLCALL N1 USING O_ROLLCALL N2 ON (N1.ROLLNO=N2.ROLLNO)
+    WHEN NOT MATCHED THEN
+    INSERT (ROLLNO,NAME,ATT_DATE,ATTENDANCE) VALUES (N2.ROLLNO,N2.NAME,N2.ATT_DATE,N2.ATTENDANCE);
+    END LOOP;
+END;
+
+OUTPUT:
+ 
+
+QUESTION 3:
+INPUT:
+SET SERVEROUTPUT ON
+DECLARE
+CURSOR para_cursor(Roll NUMBER) IS SELECT * FROM attendence WHERE rollno=roll;
+tmp attendence%rowtype;
+BEGIN
+FOR tmp IN para_cursor(2)
+LOOP
+dbms_output.put_line('ROLLNO'||tmp.rollno);
+dbms_output.put_line('Name'||tmp.name);
+dbms_output.put_line('attendence'||tmp.attendence);
+END LOOP;
+END;
+
+OUTPUT:
+
+          
+
+QUESTION 4:
+INPUT:
+SET SERVEROUTPUT ON
+DECLARE
+    min_price number;
+    max_price number;
+    cursor get_apparel(minimum number, maximum number) 
+    is select product_name, price from products where price>=minimum and price<=maximum and product_type='APPAREL';
+    product get_apparel%rowtype;
+begin
+    dbms_output.put_line('Products under category Apparels are: ');
+    min_price:=&Enter_lower_price_range;
+    max_price:=&Enter_higher_price_range;
+    DBMS_output.put_line('Available products for range: Rs. '||min_price||' to Rs. '||max_price);
+    for product in get_apparel(min_price, max_price)
+        LOOP
+            dbms_output.put_line(product.product_name||': Rs.'||product.price);
+        end loop;
+end;
+OUTPUT:
+Products under category Apparels are: 
+Available products for range: Rs. 200 to Rs. 2000 
+SHORTS: Rs.200
+JACKET: Rs.999
+DRESS: Rs.1499
+SHIRTS: Rs.399
+KURTI: Rs.599

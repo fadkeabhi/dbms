@@ -1,0 +1,124 @@
+Q1. Create a Employee Collection with following fields in a MongoDB
+ Database. Employee (Employee_id, Employee_Name, Employee_Salary,
+ Employee_Manager)
+ djabrj> db.Employee.insertMany([{id:30, name:"Joe", salary:897552, manager:"Kirti"},{id:3,
+ name:"Amy", salary:56772, manager:"Keyur"},{id:35, name:"Jonas", salary:789732,
+ manager:"Komal"}])
+ {
+ }
+ acknowledged: true,
+ insertedIds: {
+ '0': ObjectId("652580d903b30bdd0a1cdf2b"),
+ '1': ObjectId("652580d903b30bdd0a1cdf2c"),
+ '2': ObjectId("652580d903b30bdd0a1cdf2d")
+ }
+ I. Create a Java application connecting to the MongoDB database and performing Create,
+ Read, Update and Delete Operations through this java Application.
+ INPUT:
+ package mongoJava;
+ import com.mongodb.*;
+ import com.mongodb.MongoClient;
+ import java.util.Scanner;
+ public class javaMongo {
+ public static void main(String[] args) {
+ DBCollection coll=null;
+ try{
+ // To connect to mongodb server
+ MongoClient mongoClient = new MongoClient( "localhost" ,
+ 27017 );
+ // Now connect to your database
+ DB db=(DB) mongoClient.getDatabase("djabrj");
+ System.out.println("Connected to database successfully");
+ // Selecting the Collection
+ coll = db.getCollection("Employee");
+ Scanner sc2 = new Scanner(System.in);
+ int choice;
+ do {
+ System.out.println("Enter your choice of operation \n1.
+ Display All \n2. Insert Document \n3. Delete Document \n4. Update \n5.Exit \n");
+ choice = sc2.nextInt();
+ switch (choice) {
+case 1:displayAll(coll);
+ break;
+ case 2: insertDoc(coll);
+ break;
+ case 3: deleteDoc(coll);
+ break;
+ case 4: updateDoc(coll);
+ break;
+ case 5: System.out.println("Exiting Program...");
+ System.exit(0);
+ break;
+ default:
+ System.out.println(choice + " is not a
+ valid Menu Option! Please Select Another.");
+ }
+ }
+ while(choice != 5);
+ }
+ catch(Exception ex){
+ ex.printStackTrace();
+ }
+ }
+ public static void insertDoc(DBCollection coll)
+ {
+ Scanner sc=new Scanner(System.in);
+ System.out.println("Inserting document");
+ BasicDBObject document = new BasicDBObject();
+ System.out.println("Enter Employee id: ");
+ int eid = sc.nextInt();
+ System.out.println("Enter Employee Name: ");
+ String ename = sc.next();
+ System.out.println("Enter Employee Salary: ");
+ int esalary= sc.nextInt();
+ System.out.println("Enter Employee manager: ");
+ String emanager = sc.next();
+ document.put("id",eid);
+ document.put("name",ename);
+ document.put("salary",esalary);
+ document.put("manager",emanager);
+ coll.insert(document);
+ System.out.println("Document inserted successfully");
+ }
+ public static void deleteDoc(DBCollection coll)
+ {
+ System.out.println("Deleting document");
+ BasicDBObject document = new BasicDBObject();
+ System.out.println("Enter Employee id: ");
+ Scanner sc=new Scanner(System.in);
+int eid= sc.nextInt();
+ document.put("id",eid);
+ coll.remove(document);
+ System.out.println("Document deleted successfully");
+ }
+ public static void updateDoc(DBCollection coll)
+ {
+ System.out.println("Updating document");
+ System.out.println("Enter Employee id: ");
+ Scanner sc=new Scanner(System.in);
+ int eid = sc.nextInt();
+ BasicDBObject searchQuery = new
+ BasicDBObject().append("id", eid);
+ BasicDBObject newDocument = new BasicDBObject();
+ System.out.println("Enter New salary: ");
+ int esalary = sc.nextInt();
+ System.out.println("Enter New manager: ");
+ String emanager= sc.next();
+ newDocument.append("$set", new
+ BasicDBObject().append("salary",esalary).append("manager", emanager));
+ coll.update(searchQuery,newDocument);
+ System.out.println("Document updated successfully");
+ }
+ public static void displayAll(DBCollection coll)
+ {
+ System.out.println("Displaying all documents in Employee
+ collection");
+ DBCursor cursor = coll.find();
+ while(cursor.hasNext())
+ {
+ System.out.println(cursor.next());
+ }
+ }
+ }
+ OUTPUT:
+ 

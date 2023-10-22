@@ -1,0 +1,86 @@
+Q.1 Write a PL/SQL block of code using Cursor that will merge the data available in the newly
+ created table N_RollCall with the data available in the table O_RollCall. If the data in the first table
+ already exists in the second table then that data should be skipped. Use of Cursor For Loop in the
+ solution.
+ INPUT:
+ DECLARE
+ CURSOR MERGE_CURSOR IS SELECT * FROM N_ROLLCALL;
+ BEGIN
+ LOOP
+ MERGE INTO N_ROLLCALL N1 USING O_ROLLCALL N2 ON
+ (N1.ROLL_NO=N2.ROLL_NO)
+ WHEN NOT MATCHED THEN
+ INSERT(ROLL_NO, NAME) VALUES(N2.ROLL_NO, N2.NAME);
+ ENDLOOP;
+ END;
+ OUTPUT:
+
+
+Q.2 Write a PL/SQL block of code demonstrating Implicit Cursor that will display the total number of
+ tuples from RollCall Table having schema as follows.
+ RollCall (RollNo, Date, Attendance) The Attendance column can take values as ‘P’ or ‘A’
+ Use Cursor Attributes to demonstrate the working of Implicit cursor.
+ INPUT:
+ SET SERVEROUTPUT ON
+ DECLARE--total_att NUMBER;
+ BEGIN
+ UPDATE ROLLCALL SET DAT=to_date(sysdate) where ATTENDANCE='P';
+ DBMS_OUTPUT.PUT_LINE('NUMBER OF PRESENT STUDENTS IS: '
+ ||SQL%ROWCOUNT);
+ END;
+ OUTPUT:
+ TOTAL STUDENTS MARKEDPRESENTARE:4
+
+
+
+ Q. 3 Write a PL/SQL block of code using Parameterized Cursor that will display all Attendance
+ details of Roll No entered by the user.
+ INPUT:
+ DECLARE
+ CURSOR STUD_ATT(ROLL NUMBER) IS SELECT * FROM ROLLCALL WHERE
+ ROLL_NO=ROLL AND ATTENDANCE='P';
+ RCSTUD_ATT%ROWTYPE;
+ BEGIN
+ OPENSTUD_ATT(39);
+ FETCH STUD_ATT INTO RC;
+DBMS_OUTPUT.PUT_LINE('NAME OF THE STUDENT: '||RC.NAME);
+ DBMS_OUTPUT.PUT_LINE('ROLL NO OF THE STUDENT: '||RC.ROLL_NO);
+ DBMS_OUTPUT.PUT_LINE('DATE OF ATTENDANCE: '||RC.DAT);
+ DBMS_OUTPUT.PUT_LINE('SUBJECT: '||RC.SUBJECT);
+ CLOSE STUD_ATT;
+ END;
+ OUTPUT:
+ NAMEOFTHESTUDENT:MONIK
+ ROLL NOOFTHESTUDENT:39
+ DATE OFATTENDANCE: 26-08-23
+ SUBJECT: TOC
+
+
+
+ Q.4 Consider the following schema for Products table.
+ Products(Product_id, Product_Name, Product_Type, Price). Write a parameterized cursor to display
+ all products in the given price range of price and type ‘Apparel’.
+ INPUT:
+ SET SERVEROUTPUT ON
+ DECLARE
+ min_price NUMBER;
+ max_price NUMBER;
+ CURSORPROD(minp NUMBER, maxp NUMBER) IS SELECT * FROM PRODUCTS
+ WHEREPRODUCT_TYPE='APPAREL' AND PRICE BETWEEN minp AND maxp;
+ ITEM PROD%ROWTYPE;
+ BEGIN
+ min_price:=&Minimum_price;
+ max_price:=&Maximum_price;
+ DBMS_OUTPUT.PUT_LINE('Showing apparels in range: Rs '||min_price||' to Rs
+ '||max_price);
+ FORITEM IN PROD(min_price, max_price)
+ LOOP
+ DBMS_OUTPUT.PUT_LINE(ITEM.PRODUCT_NAME||': Rs. '||ITEM.PRICE);
+ ENDLOOP;
+ END;
+ OUTPUT:
+ Showing apparels in range: Rs 500 to Rs 900
+ JEANS: Rs. 850
+ DRESS: Rs. 700
+ SHIRT: Rs. 600
+ KURTA: Rs. 800
