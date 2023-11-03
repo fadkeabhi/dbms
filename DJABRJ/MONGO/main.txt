@@ -1,0 +1,5 @@
+sudo rm -rf /tmp/mongodb-27017.sock
+sudo service mongod start
+
+
+issue in no 9.2, 9.3

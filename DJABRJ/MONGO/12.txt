@@ -1,0 +1,196 @@
+Create a collection Social_Media having fields as User_Id, User_Name, No_of_Posts, No_of_Friends, 
+Friends_List, Interests. (Hint: Friends_List and Interests can be of array type) 
+Insert 20 documents in the collection Social_Media. Write queries for following. 
+1. List all the users from collection Social_Media in formatted manner. 
+2. Find all users having number of posts greater than 100. 
+3. List the user names and their respective Friens_List 
+4. Display the user ids and Friends list of users who have more than 5 friends. 
+5. Display all users with no of posts in descending order. 
+
+#######################################################
+
+db.createCollection("Social_Media")
+
+db.Social_Media.insertMany([
+  {
+    User_Id: 1,
+    User_Name: "Amit Kumar",
+    No_of_Posts: 120,
+    No_of_Friends: 3,
+    Friends_List: ["Rajesh Sharma", "Neha Verma", "Priya Singh"],
+    Interests: ["Movies", "Sports", "Gaming"]
+  },
+  {
+    User_Id: 2,
+    User_Name: "Neha Sharma",
+    No_of_Posts: 75,
+    No_of_Friends: 2,
+    Friends_List: ["Rahul Verma", "Pooja Singh"],
+    Interests: ["News", "Videos"]
+  },
+  {
+    User_Id: 3,
+    User_Name: "Rahul Verma",
+    No_of_Posts: 180,
+    No_of_Friends: 4,
+    Friends_List: ["Neha Sharma", "Sachin Tiwari", "Pooja Mishra", "Amit Yadav"],
+    Interests: ["Movies", "Gaming"]
+  },
+  {
+    User_Id: 4,
+    User_Name: "Priya Choudhary",
+    No_of_Posts: 90,
+    No_of_Friends: 1,
+    Friends_List: ["Amit Kumar"],
+    Interests: ["Sports", "News", "Gaming"]
+  },
+  {
+    User_Id: 5,
+    User_Name: "Rajesh Sharma",
+    No_of_Posts: 65,
+    No_of_Friends: 5,
+    Friends_List: ["Neha Sharma", "Sachin Tiwari", "Pooja Mishra", "Amit Yadav", "Priya Choudhary"],
+    Interests: ["Movies", "Videos", "News"]
+  },
+  {
+    User_Id: 6,
+    User_Name: "Nisha Verma",
+    No_of_Posts: 105,
+    No_of_Friends: 3,
+    Friends_List: ["Rahul Verma", "Amit Kumar", "Priya Choudhary"],
+    Interests: ["Movies", "Sports", "Gaming"]
+  },
+  {
+    User_Id: 7,
+    User_Name: "Amit Yadav",
+    No_of_Posts: 50,
+    No_of_Friends: 4,
+    Friends_List: ["Rajesh Sharma", "Sachin Tiwari", "Neha Sharma", "Priya Choudhary"],
+    Interests: ["Gaming", "Videos"]
+  },
+  {
+    User_Id: 8,
+    User_Name: "Pooja Mishra",
+    No_of_Posts: 70,
+    No_of_Friends: 2,
+    Friends_List: ["Rajesh Sharma", "Sachin Tiwari"],
+    Interests: ["Movies", "Sports", "Gaming"]
+  },
+  {
+    User_Id: 9,
+    User_Name: "Sachin Tiwari",
+    No_of_Posts: 95,
+    No_of_Friends: 3,
+    Friends_List: ["Amit Yadav", "Rahul Verma", "Neha Sharma"],
+    Interests: ["News", "Videos"]
+  },
+  {
+    User_Id: 10,
+    User_Name: "Rahul Kumar",
+    No_of_Posts: 110,
+    No_of_Friends: 5,
+    Friends_List: ["Rajesh Sharma", "Sachin Tiwari", "Neha Sharma", "Priya Choudhary", "Amit Yadav"],
+    Interests: ["Gaming", "Videos"]
+  },
+  {
+    User_Id: 11,
+    User_Name: "Priya Singh",
+    No_of_Posts: 150,
+    No_of_Friends: 1,
+    Friends_List: ["Amit Kumar"],
+    Interests: ["Movies", "Sports", "News"]
+  },
+  {
+    User_Id: 12,
+    User_Name: "Rajesh Kumar",
+    No_of_Posts: 70,
+    No_of_Friends: 4,
+    Friends_List: ["Sachin Tiwari", "Pooja Mishra", "Amit Yadav", "Rahul Verma"],
+    Interests: ["Movies", "Videos", "News"]
+  },
+  {
+    User_Id: 13,
+    User_Name: "Priyanka Sharma",
+    No_of_Posts: 85,
+    No_of_Friends: 3,
+    Friends_List: ["Neha Sharma", "Sachin Tiwari", "Rahul Kumar"],
+    Interests: ["Movies", "Sports", "Gaming"]
+  },
+  {
+    User_Id: 14,
+    User_Name: "Sachin Kumar",
+    No_of_Posts: 90,
+    No_of_Friends: 2,
+    Friends_List: ["Amit Kumar", "Pooja Mishra"],
+    Interests: ["Gaming", "Videos"]
+  },
+  {
+    User_Id: 15,
+    User_Name: "Neha Singh",
+    No_of_Posts: 65,
+    No_of_Friends: 3,
+    Friends_List: ["Rajesh Sharma", "Rahul Kumar", "Priya Choudhary"],
+    Interests: ["Movies", "Sports", "Gaming"]
+  },
+  {
+    User_Id: 16,
+    User_Name: "Amit Sharma",
+    No_of_Posts: 100,
+    No_of_Friends: 4,
+    Friends_List: ["Neha Sharma", "Priya Singh", "Sachin Kumar", "Rahul Kumar"],
+    Interests: ["News", "Videos"]
+  },
+  {
+    User_Id: 17,
+    User_Name: "Pooja Verma",
+    No_of_Posts: 75,
+    No_of_Friends: 2,
+    Friends_List: ["Amit Yadav", "Rajesh Kumar"],
+    Interests: ["Gaming", "Videos"]
+  },
+  {
+    User_Id: 18,
+    User_Name: "Rahul Kumar",
+    No_of_Posts: 50,
+    No_of_Friends: 4,
+    Friends_List: ["Rajesh Sharma", "Sachin Kumar", "Priya Sharma", "Neha Sharma"],
+    Interests: ["Movies", "Sports", "News"]
+  },
+  {
+    User_Id: 19,
+    User_Name: "Priya Sharma",
+    No_of_Posts: 120,
+    No_of_Friends: 1,
+    Friends_List: ["Amit Kumar"],
+    Interests: ["Movies", "Videos", "News"]
+  },
+  {
+    User_Id: 20,
+    User_Name: "Sachin Sharma",
+    No_of_Posts: 75,
+    No_of_Friends: 3,
+    Friends_List: ["Neha Sharma", "Amit Yadav", "Pooja Verma"],
+    Interests: ["Movies", "Sports", "Gaming"]
+  }
+])
+
+
+##################################################
+
+1
+db.Social_Media.find({}, { _id: 0, User_Id: 1, User_Name: 1, No_of_Posts: 1, No_of_Friends: 1, Friends_List: 1, Interests: 1 })
+
+2
+db.Social_Media.find({ No_of_Posts: { $gt: 100 } }, { _id: 0, User_Id: 1, User_Name: 1, No_of_Posts: 1 })
+
+
+3
+db.Social_Media.find({}, { _id: 0, User_Name: 1, Friends_List: 1 })
+
+
+4
+db.Social_Media.find({ No_of_Friends: { $gt: 5 } }, { _id: 0, User_Id: 1, Friends_List: 1 })
+
+
+5
+db.Social_Media.find({}, { _id: 0, User_Id: 1, User_Name: 1, No_of_Posts: 1 }).sort({No_of_Posts:-1})

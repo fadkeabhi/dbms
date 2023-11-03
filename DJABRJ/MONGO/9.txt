@@ -1,0 +1,140 @@
+Create collection for Student{roll_no, name, class, dept, aggregate_marks}. Write Map Reduce Functions for 
+following requirements. 
+1. Finding the total marks of students of “TE” class department-wise. 
+2. Finding the highest marks of students of “SE” class department-wise. 
+3. Find Average marks of students of “BE” class department-wise. 
+
+##################################################
+
+db.createCollection("Student")
+
+db.Student.insertMany([
+  {
+    roll_no: "A101",
+    name: "Amit Kumar",
+    class: "TE",
+    dept: "Comp",
+    aggregate_marks: 85
+  },
+  {
+    roll_no: "A102",
+    name: "Neha Sharma",
+    class: "BE",
+    dept: "IT",
+    aggregate_marks: 92
+  },
+  {
+    roll_no: "A103",
+    name: "Rahul Verma",
+    class: "SE",
+    dept: "ENtc",
+    aggregate_marks: 78
+  },
+  {
+    roll_no: "A104",
+    name: "Priya Singh",
+    class: "TE",
+    dept: "Comp",
+    aggregate_marks: 88
+  },
+  {
+    roll_no: "A105",
+    name: "Rajesh Sharma",
+    class: "BE",
+    dept: "IT",
+    aggregate_marks: 95
+  },
+  {
+    roll_no: "A106",
+    name: "Nisha Verma",
+    class: "SE",
+    dept: "ENtc",
+    aggregate_marks: 80
+  },
+  {
+    roll_no: "A107",
+    name: "Amit Yadav",
+    class: "TE",
+    dept: "Comp",
+    aggregate_marks: 86
+  },
+  {
+    roll_no: "A108",
+    name: "Pooja Mishra",
+    class: "BE",
+    dept: "IT",
+    aggregate_marks: 93
+  },
+  {
+    roll_no: "A109",
+    name: "Sachin Tiwari",
+    class: "SE",
+    dept: "ENtc",
+    aggregate_marks: 79
+  },
+  {
+    roll_no: "A110",
+    name: "Rahul Kumar",
+    class: "TE",
+    dept: "Comp",
+    aggregate_marks: 87
+  }
+])
+
+
+##############################################
+
+1
+var mapFunction = function() {
+  if (this.class === "TE") {
+    emit(this.dept, this.aggregate_marks);
+  }
+};
+
+var reduceFunction = function(key, values) {
+  return Array.sum(values);
+};
+
+db.Student.mapReduce(mapFunction, reduceFunction, { out: "TE_TotalMarks" })
+db.TE_TotalMarks.find()
+
+
+2
+var mapFunction = function() {
+  if (this.class === "SE") {
+    emit(this.dept, this.aggregate_marks);
+  }
+};
+
+var reduceFunction = function(key, values) {
+  return Math.max.apply(null, values);
+};
+
+db.Student.mapReduce(mapFunction, reduceFunction, { out: "SE_HighestMarks" })
+db.SE_HighestMarks.find()
+
+
+
+3
+
+var mapFunction = function() {
+  if (this.class === "BE") {
+    emit(this.dept, { sum: this.aggregate_marks, count: 1 });
+  }
+};
+
+var reduceFunction = function(key, values) {
+  var reducedVal = { sum: 0, count: 0 };
+  for (var i = 0; i < values.length; i++) {
+    reducedVal.sum += values[i].sum;
+    reducedVal.count += values[i].count;
+  }
+  return reducedVal;
+};
+
+db.Student.mapReduce(mapFunction, reduceFunction, { out: "BE_AverageMarks" })
+db.BE_AverageMarks.find().forEach(function(doc) {
+  doc.value.average = doc.value.sum / doc.value.count;
+  db.BE_AverageMarks.save(doc);
+});
+

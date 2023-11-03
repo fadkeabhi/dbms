@@ -1,0 +1,119 @@
+Create collection Student with fields as Roll_No, Name, Class, Marks, Address, Enrolled_Courses. 
+(Hint: One student can enrol in multiple courses. Use Array to store the names of courses enrolled) 
+Insert 10 documents in the collection Student. Write the queries for following. 
+1. List the names of students who have enrolled in the course “DBMS”, “TOC”. 
+2. List the Roll numbers and class of students who have marks more than 50 or class as TE. 
+3. Update the entire record of roll_no A10. 
+4. Display the names of students having 3rd and 4th highest marks. 
+5. Delete the records of students having marks less than 20. 
+6. Delete only first record from the collection.
+
+################################################################################
+
+db.createCollection("Students")
+db.Student.insertMany([
+  {
+    Roll_No: "A1",
+    Name: "Abhishek Fadake",
+    Class: "A",
+    Marks: 85,
+    Address: "Pune",
+    Enrolled_Courses: ["DBMS", "TOC"]
+  },
+  {
+    Roll_No: "A2",
+    Name: "Priya Sharma",
+    Class: "B",
+    Marks: 78,
+    Address: "Mumbai",
+    Enrolled_Courses: ["SPOS", "CNS"]
+  },
+  {
+    Roll_No: "A3",
+    Name: "Rahul Deshmukh",
+    Class: "A",
+    Marks: 92,
+    Address: "Nagpur",
+    Enrolled_Courses: ["DBMS", "SPOS"]
+  },
+  {
+    Roll_No: "A4",
+    Name: "Sneha Joshi",
+    Class: "B",
+    Marks: 63,
+    Address: "Pune",
+    Enrolled_Courses: ["TOC", "CNS"]
+  },
+  {
+    Roll_No: "A5",
+    Name: "Sachin Pawar",
+    Class: "A",
+    Marks: 70,
+    Address: "Mumbai",
+    Enrolled_Courses: ["DBMS", "CNS"]
+  },
+  {
+    Roll_No: "A6",
+    Name: "Neha Singh",
+    Class: "B",
+    Marks: 95,
+    Address: "Nagpur",
+    Enrolled_Courses: ["TOC", "SPOS"]
+  },
+  {
+    Roll_No: "A7",
+    Name: "Vikas Gupta",
+    Class: "A",
+    Marks: 80,
+    Address: "Nagar",
+    Enrolled_Courses: ["SPOS", "CNS"]
+  },
+  {
+    Roll_No: "A8",
+    Name: "Ritu Shah",
+    Class: "B",
+    Marks: 58,
+    Address: "Pune",
+    Enrolled_Courses: ["TOC", "SPOS"]
+  },
+  {
+    Roll_No: "A9",
+    Name: "Amit Kumar",
+    Class: "A",
+    Marks: 87,
+    Address: "Nagar",
+    Enrolled_Courses: ["DBMS", "CNS"]
+  },
+  {
+    Roll_No: "A10",
+    Name: "Rajesh Chavan",
+    Class: "B",
+    Marks: 72,
+    Address: "Mumbai",
+    Enrolled_Courses: ["DBMS", "TOC"]
+  }
+])
+
+
+#####################################
+1
+db.Student.find({Enrolled_Courses:{$in:["DBMS","TOC"]}},{Name:1,_id:0})
+
+
+2
+db.Student.find({$or:[{Marks:{$gt:50}}, {Class:"TE"}]}, {Roll_No:1, Name:1, _id:0})
+
+
+3
+db.Student.updateOne({Roll_No: "A10"}, {$set: { Name: "Ramesh Wagh", Class: "A", Marks: 12, Address: "Pune", Enrolled_Courses: ["DBMS", "TOC"] }})
+
+
+4
+db.Student.find({},{Name:1, _id:0}).sort({Marks:-1}).skip(2).limit(2)
+
+5
+db.Student.find({Marks:{$lt:20}},{})
+
+
+6
+db.Student.deleteOne({})

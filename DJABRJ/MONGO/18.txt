@@ -1,0 +1,159 @@
+Problem Statement 18 (AGGREGATION & INDEXING USING MONGODB) 
+Create the Collection Student_Data( Student _ID,  Student _Name, Department, Marks )and solve the 
+following: 
+1. Display all Students based on their departments along with an average Marks of a particular 
+department. 
+2. Displays the number of Students associated along with a particular department. 
+3. Display list of Students with the highest Marks in each Department in descending order 
+of Marks. 
+4. Create an index on field Student_ID. 
+5. Create an index on fields “Student_Name‘ and “Department”. 
+6. Drop an index on field Student_ID. 
+7. Drop an index on fields “Student_Name‘ and “Department”. 
+
+######################################################
+
+db.createCollection("Student_Data")
+
+db.Student_Data.insertMany([
+  {
+    Student_ID: 1,
+    Student_Name: "Abhishek Fadake",
+    Department: "COMP",
+    Marks: 99
+  },
+  {
+    Student_ID: 2,
+    Student_Name: "Priya Sharma",
+    Department: "IT",
+    Marks: 70
+  },
+  {
+    Student_ID: 3,
+    Student_Name: "Suresh Gupta",
+    Department: "ENTC",
+    Marks: 92
+  },
+  {
+    Student_ID: 4,
+    Student_Name: "Pooja Singh",
+    Department: "COMP",
+    Marks: 63
+  },
+  {
+    Student_ID: 5,
+    Student_Name: "Amit Patel",
+    Department: "ENTC",
+    Marks: 88
+  },
+  {
+    Student_ID: 6,
+    Student_Name: "Neha Deshmukh",
+    Department: "IT",
+    Marks: 77
+  },
+  {
+    Student_ID: 7,
+    Student_Name: "Rajesh Chavan",
+    Department: "COMP",
+    Marks: 75
+  },
+  {
+    Student_ID: 8,
+    Student_Name: "Anjali Shah",
+    Department: "ENTC",
+    Marks: 70
+  },
+  {
+    Student_ID: 9,
+    Student_Name: "Manoj Joshi",
+    Department: "COMP",
+    Marks: 78
+  },
+  {
+    Student_ID: 10,
+    Student_Name: "Deepak Mishra",
+    Department: "IT",
+    Marks: 65
+  }
+])
+
+
+###################################################
+
+1
+db.Student_Data.aggregate({$group: {_id:"$Department", Students: {$push: "$Student_Name"}, Avg_Marks: {$avg: "$Marks"}}})
+
+
+2
+db.Student_Data.aggregate({$group: {_id : "$Department", noOfStudents: {$sum: 1}}})
+
+
+$$3
+db.Student_Data.aggregate([
+  {
+    $group: {
+      _id: "$Department",
+      MaxMarks: { $max: "$Marks" }
+    }
+  },
+  {
+    $sort: { MaxMarks: -1 }
+  }
+])
+
+$$$$$$$$$$$$$$$
+db.Student_Data.aggregate([
+  {
+    $group: {
+      _id: "$Department",
+      MaxMarks: { $max: "$Marks" }
+    }
+  },
+  {
+    $lookup: {
+      from: "Student_Data",
+      localField: "MaxMarks",
+      foreignField: "Marks",
+      as: "TopStudents"
+    }
+  },
+  {
+    $unwind: "$TopStudents"
+  },
+  {
+    $sort: { "TopStudents.Marks": -1 }
+  },
+  {
+    $group: {
+      _id: "$_id",
+      TopStudents: { $first: "$TopStudents" }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      Department: "$_id",
+      Student_ID: "$TopStudents.Student_ID",
+      Student_Name: "$TopStudents.Student_Name",
+      Marks: "$TopStudents.Marks"
+    }
+  }
+])
+
+
+
+4
+db.Student_Data.createIndex({ Student_ID: 1 })
+
+
+5
+db.Student_Data.createIndex({ Student_Name: 1, Department: 1 })
+
+
+6
+db.Student_Data.dropIndex("Student_ID_1")
+
+
+7
+db.Student_Data.dropIndex("Student_Name_1_Department_1")

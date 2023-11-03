@@ -1,0 +1,103 @@
+Create the Collection Movies_Data( Movie_ID, Movie_Name, Director, Genre, BoxOfficeCollection) and 
+solve the following: 
+
+Display a list stating how many Movies are directed by each “Director”. 
+Display list of Movies with the highest BoxOfficeCollection in each Genre. 
+Display list of Movies with the highest BoxOfficeCollection in each Genre in ascending order 
+of BoxOfficeCollection.    
+Create an index on field Movie_ID. 
+Create an index on fields ” Movie_Name” and ” Director”. 
+Drop an index on field  Movie_ID. 
+Drop an index on fields ” Movie_Name” and ” Director”. ------------------------------------------------------------------------------
+
+
+###############################################
+
+db.createCollection("Movies_Data")
+
+db.Movies_Data.insertMany([
+  {
+    Movie_ID: 1,
+    Movie_Name: "Sholay",
+    Director: "Ramesh Sippy",
+    Genre: "Action",
+    BoxOfficeCollection: 150000000
+  },
+  {
+    Movie_ID: 2,
+    Movie_Name: "Kabhi Khushi Kabhie Gham",
+    Director: "Karan Johar",
+    Genre: "Drama",
+    BoxOfficeCollection: 50000000
+  },
+  {
+    Movie_ID: 3,
+    Movie_Name: "Andaz Apna Apna",
+    Director: "Rajkumar Santoshi",
+    Genre: "Comedy",
+    BoxOfficeCollection: 60000000
+  },
+  {
+    Movie_ID: 4,
+    Movie_Name: "Bahubali: The Beginning",
+    Director: "S.S. Rajamouli",
+    Genre: "Action",
+    BoxOfficeCollection: 650000000
+  },
+  {
+    Movie_ID: 5,
+    Movie_Name: "3 Idiots",
+    Director: "Rajkumar Hirani",
+    Genre: "Drama",
+    BoxOfficeCollection: 130000000
+  },
+  {
+    Movie_ID: 6,
+    Movie_Name: "Lagaan",
+    Director: "Ashutosh Gowariker",
+    Genre: "Drama",
+    BoxOfficeCollection: 86000000
+  },
+  {
+    Movie_ID: 7,
+    Movie_Name: "PK",
+    Director: "Rajkumar Hirani",
+    Genre: "Comedy",
+    BoxOfficeCollection: 85000000
+  },
+  {
+    Movie_ID: 8,
+    Movie_Name: "Bajrangi Bhaijaan",
+    Director: "Kabir Khan",
+    Genre: "Drama",
+    BoxOfficeCollection: 320000000
+  },
+  {
+    Movie_ID: 9,
+    Movie_Name: "Baahubali: The Conclusion",
+    Director: "S.S. Rajamouli",
+    Genre: "Action",
+    BoxOfficeCollection: 1810000000
+  },
+  {
+    Movie_ID: 10,
+    Movie_Name: "Chennai Express",
+    Director: "Rohit Shetty",
+    Genre: "Action",
+    BoxOfficeCollection: 423000000
+  }
+])
+
+
+############################################
+
+1
+db.Movies_Data.aggregate([{$group: {_id: "$Director"}}])
+
+2
+db.Movies_Data.aggregate([{$group: {_id: "$Genre", HBOC : {$max: "$BoxOfficeCollection"}}}, {$lookup: {from: "Movies_Data", localField:"HBOC", foreignField:"BoxOfficeCollection", as: "MMovie"}}, {$project: {_id:0, MovieName: "$MMovie.Movie_Name", BoxOfficeCollection : "$MMovie.BoxOfficeCollection"  }}]).pretty()
+
+3
+db.Movies_Data.aggregate([   { $group: { _id: "$Genre", maxBoxOffice: { $max: "$BoxOfficeCollection" }     }   },   {     $lookup: { from: "Movies_Data", let: { maxBoxOffice: "$maxBoxOffice" }, pipeline: [   {     $match: {       $expr: { $eq: ["$BoxOfficeCollection", "$$maxBoxOffice"] }     }   },   {     $sort: { BoxOfficeCollection: 1 }   } ], as: "movies"     }   } ])
+
+//use create index and drop index
