@@ -1,0 +1,61 @@
+-- Create the Manager table
+CREATE TABLE Manager (
+    Manager_id INT PRIMARY KEY,
+    Manager_name VARCHAR(255)
+);
+
+-- Create the Locations table
+CREATE TABLE Locations (
+    Location_id INT PRIMARY KEY,
+    Street_address VARCHAR(255),
+    Postal_code VARCHAR(10),
+    City VARCHAR(255),
+    State VARCHAR(255),
+    Country_id VARCHAR(2)
+);
+
+
+
+
+
+-- Create the Departments table
+CREATE TABLE Departments (
+    Department_id INT PRIMARY KEY,
+    Department_name VARCHAR(255),
+    Manager_id INT,
+    Location_id INT,
+    FOREIGN KEY (Manager_id) REFERENCES Manager(Manager_id),
+    FOREIGN KEY (Location_id) REFERENCES Locations(Location_id)
+);
+
+
+-- Create the Employee table
+CREATE TABLE Employee (
+    Employee_id INT PRIMARY KEY,
+    First_name VARCHAR(255),
+    Last_name VARCHAR(255),
+    Hire_date DATE,
+    Salary DECIMAL(10, 2),
+    Job_title VARCHAR(255),
+    Manager_id INT,
+    Department_id INT,
+    FOREIGN KEY (Manager_id) REFERENCES Manager(Manager_id),
+    FOREIGN KEY (Department_id) REFERENCES Departments(Department_id)
+);
+
+
+
+
+1.
+SELECT * FROM employee WHERE SALARY > (SELECT AVG(salary) from employee) AND Department_id = (Select Department_id from departments where Department_name = "HR");
+
+2.
+SELECT * FROM employee e WHERE SALARY = (SELECT MIN(salary) from employee WHERE Department_id = e.Department_id);
+
+3.
+SELECT * FROM employee e WHERE SALARY > (SELECT AVG(salary) from employee WHERE Department_id = e.Department_id);
+
+4.
+SELECT Department_name, manager_name, city FROM departments left join manager on manager.Manager_id = departments.Manager_id left join locations on locations.Location_id = Departments.Location_id;
+
+5.

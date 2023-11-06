@@ -55,7 +55,7 @@ var mapFunction = function() {
 // Reduce function to group books by author
 var reduceFunction = function(author, books) {
   var result = { Books: [] };
-  books.forEach(function(book) {
+  books.forEach(function(book) { 
     result.Books.push(book);
   });
   return result;
