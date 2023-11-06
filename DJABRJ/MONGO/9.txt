@@ -80,6 +80,7 @@ db.Student.insertMany([
     aggregate_marks: 87
   }
 ])
+db.Student.insertOne({ "roll_no" : "A111", "name" : "Rahul Kumar 2", "class" : "TE", "dept" : "ENTC", "aggregate_marks" : 87 })
 
 
 ##############################################
@@ -100,41 +101,35 @@ db.TE_TotalMarks.find()
 
 
 2
-var mapFunction = function() {
-  if (this.class === "SE") {
-    emit(this.dept, this.aggregate_marks);
-  }
-};
+var m = function(){
+if(this.class == "SE"){
+emit(this.dept, this.aggregate_marks);
+}
+}
 
-var reduceFunction = function(key, values) {
-  return Math.max.apply(null, values);
-};
+var r = function(key, values) {
+    var max = values[0]; 
+    for (var i = 1; i < values.length; i++) {
+        if (values[i] > max) {
+            max = values[i]; 
+        }
+    }
+    return max; 
+}
 
-db.Student.mapReduce(mapFunction, reduceFunction, { out: "SE_HighestMarks" })
-db.SE_HighestMarks.find()
+db.Student.mapReduce(m,r,{out:"a2"})
 
 
 
 3
+var m = function(){
+if(this.class == "BE"){
+emit(this.dept, this.aggregate_marks);
+}
+}
 
-var mapFunction = function() {
-  if (this.class === "BE") {
-    emit(this.dept, { sum: this.aggregate_marks, count: 1 });
-  }
-};
+var r = function(key, values) {
+    return Array.avg(values); 
+}
 
-var reduceFunction = function(key, values) {
-  var reducedVal = { sum: 0, count: 0 };
-  for (var i = 0; i < values.length; i++) {
-    reducedVal.sum += values[i].sum;
-    reducedVal.count += values[i].count;
-  }
-  return reducedVal;
-};
-
-db.Student.mapReduce(mapFunction, reduceFunction, { out: "BE_AverageMarks" })
-db.BE_AverageMarks.find().forEach(function(doc) {
-  doc.value.average = doc.value.sum / doc.value.count;
-  db.BE_AverageMarks.save(doc);
-});
-
+db.Student.mapReduce(m,r,{out:"a3"})
