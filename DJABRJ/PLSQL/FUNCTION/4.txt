@@ -1,0 +1,76 @@
+Consider following schema for Bank database.  
+Account(Account_No, Cust_Name, Balance, NoOfYears)  
+Earned_Interest(Account_No, Interest_Amt)  
+1. Write a PL/SQL procedure for following requirement. Take as input Account_No and Interest Rate from User. 
+Calculate the Interest_Amt as simple interest for the given Account_No and store it in Earned_Interest table. 
+Display all the details of Earned_Interest Table. 
+2. Write a PLSQL function to display all records from Account table having Balance greater than 50,000. 
+
+
+###################################################
+
+create table account(Account_No number primary key, Cust_Name varchar2(20), Balance number, NoOfYears number);
+
+create table Earned_Interest(Account_No number,  Interest_Amt number);
+
+insert into account (Account_No, Cust_Name , Balance , NoOfYears ) values (1,'Abhi', 5000, 6);
+
+
+
+#####################################
+
+create or replace procedure calcInt(acc_no IN number , interest IN number)
+AS
+balance number;
+period number;
+calculated_int number;
+BEGIN
+
+SELECT Balance , NoOfYears into balance , period  from account WHERE Account_No = acc_no;
+calculated_int := interest * balance / 100;
+INSERT INTO Earned_Interest values (acc_no,calculated_int );
+dbms_output.put_line('Interest added to table.');
+END;
+
+
+DECLARE
+a number;
+i number;
+
+BEGIN
+
+a := :Account_Number;
+i := :Interest_rate;
+
+calcInt(a,i);
+
+END;
+
+
+
+########################
+
+create or replace FUNCTION dispRec
+(amount IN number)
+RETURN NUMBER
+AS
+BEGIN
+FOR rec IN (
+        --an implicit cursor is created here
+        SELECT * from account WHERE balance > amount
+    )
+    LOOP
+        dbms_output.put_line(rec.Cust_Name || ' ' || rec.Balance);
+    END LOOP;
+RETURN 0;
+END;
+
+
+
+DECLARE
+a number;
+BEGIN
+
+a := dispRec(50000);
+
+END;

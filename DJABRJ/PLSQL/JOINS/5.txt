@@ -1,0 +1,60 @@
+Consider Following Schema 
+Employee (Employee_id, First_name, Last_name , Hire_date, Salary, Job_title, Manager_id, department_id) 
+Departments(Department_id, Department_name, Manager_id, Location_id) 
+Locations(Location_id , Street_address , Postal_code, city, state, Country_id) 
+Manager(Manager_id, Manager_name) 
+Create the tables with referential integrity.Solve following queries using joins and subqueries. 
+1. Write a query to find the names (first_name, last_name), the salary of the employees who earn more than 
+the average salary and who works in any of the IT departments. 
+2. Write a query to find the names (first_name, last_name), the salary of the employees who earn the same 
+salary as the minimum salary for all departments. 
+3. Write a query to display the employee ID, first name, last names, salary of all employees whose salary is 
+above average for their departments. 
+4. Write a query to display the department name, manager name, and city. 
+5. Write a query to display the name (first_name, last_name), hire date, salary of all managers whose 
+experience is more than 15 years. 
+
+
+########################################################
+
+CREATE TABLE Manager (
+  Manager_id NUMBER PRIMARY KEY,
+  Manager_name VARCHAR2(100)
+);
+
+
+CREATE TABLE Locations (
+  Location_id NUMBER PRIMARY KEY,
+  Street_address VARCHAR2(100),
+  Postal_code VARCHAR2(10),
+  City VARCHAR2(50),
+  State VARCHAR2(50),
+  Country_id VARCHAR2(2)
+);
+
+
+CREATE TABLE Departments (
+  Department_id NUMBER PRIMARY KEY,
+  Department_name VARCHAR2(50),
+  Manager_id NUMBER,
+  Location_id NUMBER,
+  -- Add foreign key constraint
+  CONSTRAINT fk_department_manager FOREIGN KEY (Manager_id) REFERENCES Manager(Manager_id),
+  CONSTRAINT fk_department_location FOREIGN KEY (Location_id) REFERENCES Locations(Location_id)
+);
+
+
+CREATE TABLE Employee (
+  Employee_id NUMBER PRIMARY KEY,
+  First_name VARCHAR2(50),
+  Last_name VARCHAR2(50),
+  Hire_date DATE,
+  Salary NUMBER(10, 2),
+  Job_title VARCHAR2(50),
+  Manager_id NUMBER,
+  Department_id NUMBER,
+  -- Add foreign key constraint
+  CONSTRAINT fk_employee_department FOREIGN KEY (Department_id) REFERENCES Departments(Department_id)
+);
+
+

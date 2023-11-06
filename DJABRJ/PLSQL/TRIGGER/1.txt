@@ -1,0 +1,59 @@
+Employee(emp_id, emp_name, salary, designation) 
+Salary_Backup(emp_id, old_salary, new_salary, salary_difference) 
+Create a Trigger to record salary change of the employee. Whenever salary is updated insert the details in 
+Salary_Backup table. 
+Create a Trigger that will prevent deleting the employee record having designation as CEO. 
+
+#####################################################
+
+CREATE TABLE Employee (
+  emp_id INT PRIMARY KEY,
+  emp_name VARCHAR(255),
+  salary DECIMAL(10, 2),
+  designation VARCHAR(50)
+);
+
+
+
+CREATE TABLE Salary_Backup (
+  emp_id INT,
+  old_salary DECIMAL(10, 2),
+  new_salary DECIMAL(10, 2),
+  salary_difference DECIMAL(10, 2),
+  change_date TIMESTAMP
+);
+
+
+INSERT ALL
+  INTO Employee (emp_id, emp_name, salary, designation) VALUES (1, 'Abhishek Fadake', 60000.00, 'Manager')
+  INTO Employee (emp_id, emp_name, salary, designation) VALUES (2, 'Priya Sharma', 75000.00, 'Engineer')
+  INTO Employee (emp_id, emp_name, salary, designation) VALUES (3, 'Rahul Kumar', 90000.00, 'CEO')
+  INTO Employee (emp_id, emp_name, salary, designation) VALUES (4, 'Shreya Gupta', 55000.00, 'Analyst')
+  INTO Employee (emp_id, emp_name, salary, designation) VALUES (5, 'Sachin Yadav', 68000.00, 'Engineer')
+SELECT * FROM dual;
+
+
+
+CREATE OR REPLACE TRIGGER SalaryChangeTrigger
+BEFORE UPDATE ON Employee
+FOR EACH ROW
+BEGIN
+  IF :NEW.salary <> :OLD.salary THEN
+    INSERT INTO Salary_Backup (emp_id, old_salary, new_salary, salary_difference, change_date)
+    VALUES (:OLD.emp_id, :OLD.salary, :NEW.salary, :NEW.salary - :OLD.salary, SYSDATE);
+  END IF;
+END;
+
+
+
+
+CREATE OR REPLACE TRIGGER PreventCEODeletionTrigger
+BEFORE DELETE ON Employee
+FOR EACH ROW
+DECLARE
+BEGIN
+  IF :OLD.designation = 'CEO' THEN
+    RAISE_APPLICATION_ERROR(-20001, 'Cannot delete CEO record.');
+  END IF;
+END;
+
