@@ -92,7 +92,7 @@ db.Movies_Data.insertMany([
 ############################################
 
 1
-db.Movies_Data.aggregate([{$group: {_id: "$Director"}}])
+db.Movies_Data.aggregate([{$group: {_id: "$Director", count:{$sum:1}}}])
 
 2
 db.Movies_Data.aggregate([{$group: {_id: "$Genre", HBOC : {$max: "$BoxOfficeCollection"}}}, {$lookup: {from: "Movies_Data", localField:"HBOC", foreignField:"BoxOfficeCollection", as: "MMovie"}}, {$project: {_id:0, MovieName: "$MMovie.Movie_Name", BoxOfficeCollection : "$MMovie.BoxOfficeCollection"  }}]).pretty()
