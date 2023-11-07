@@ -1,0 +1,46 @@
+Employee( emp_id, dept_idemp_name, DoJ, salary, commission,job_title) 
+Consider the schema given above for Write a PLSQL Program to 
+
+1. Create a Trigger to ensure the salary of the employee is not decreased.
+
+CREATE OR REPLACE TRIGGER EMP_TRIG
+BEFORE UPDATE ON Employee
+FOR EACH ROW
+BEGIN
+IF :NEW.Salary < :OLD.Salary THEN
+ RAISE_APPLICATION_ERROR(-20001,'Salary Decrement is not allowed');
+END IF;
+END;
+
+ 
+update Employee set Salary=1000 where emp_id=101;
+
+output:
+ORA-20001: Salary Decrement is not allowed
+ORA-06512: at "ADITYA.EMP_TRIG", line 3
+ORA-04088: error during execution of trigger 'ADITYA.EMP_TRIG'
+
+1. update Employee set Salary=1000 where emp_id=101;
+
+
+2. Whenever the job title is changed for an employee write the following details into job_history table. Employee 
+ID, old job title, old department ID, DoJ for start date, system date for end date. 
+
+create table Job_History( emp_id int,old_JT varchar2(20),old_Dept_id int,Doj date,end_date date default SYSDATE);
+
+describe Job_History;
+
+CREATE OR REPLACE TRIGGER Changejobtitle
+AFTER UPDATE ON Employee
+FOR EACH ROW
+BEGIN
+  IF :NEW.job_title <> :OLD.job_title THEN
+    INSERT INTO Job_History(emp_id, old_JT, old_Dept_id, Doj)
+    VALUES(:NEW.emp_id, :OLD.job_title, :OLD.Dept_id, :OLD.Doj);
+  END IF;
+END;
+/
+
+update Employee set job_title='CEO' where emp_id=101;
+
+select * from Job_History;

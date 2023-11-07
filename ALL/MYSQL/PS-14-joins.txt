@@ -1,0 +1,27 @@
+Consider Following Schema
+Employee (Employee_id, First_name, last_name , hire_date, salary, Job_title, manager_id, department_id)
+Departments(Department_id, Department_name, Manager_id, Location_id)
+Locations(location_id ,street_address ,postal_code, city, state, country_id)
+Manager(Manager_id, Manager_name)
+Create the tables with referential integrity. Solve following queries using joins and subqueries.
+
+1. Write a query to find the names (first_name, last_name) and the salaries of the employees who have higher salary than the employee whose last_name=''Singh”.
+
+select First_name,Last_name,Salary from Employee where Salary > (select Salary from Employee where Last_name="Dhabale");
+
+2. Write a query to find the names (first_name, last_name) of the employees who have a manager and work for a department based in the United States.
+
+select e.First_name , e.Last_name  from Departments d  join Employee e on d.Department_id=e.Department_id join Locations l on d.Location_id=l.Location_id where e.Manager_id is NOT NULL and l.Country_id=91 ;
+
+3. Write a query to find the names (first_name, last_name), the salary of the employees whose salary is greater than the average salary.
+
+select First_name , Last_name , Salary from Employee where S
+alary > (select avg(Salary) from Employee);
+
+4. Write a query to find the employee id, name (last_name) along with their manager_id, manager name (last_name).  
+
+select Employee.Employee_id,Employee.Last_name,Manager.Manager_id,Manager.Manager_name from Employee join Manager on Employee.Manager_id=Manager.Manager_id;
+
+5. Find the names and hire date of the employees who were hired after 'Jones'.
+
+ select Hire_date,Last_name from Employee where Hire_date <( select Hire_date from Employee where Last_name="Dhabale" );

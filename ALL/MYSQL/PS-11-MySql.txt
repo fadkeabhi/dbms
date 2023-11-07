@@ -1,0 +1,20 @@
+Problem Statement 11 (DDL USING MYSQL)
+Create following tables using a given schema and insert appropriate data into the same:
+Customer (CustID, Name, Cust_Address, Phone_no, Email_ID, Age)
+Branch (Branch ID, Branch_Name, Address)
+Account (Account_no, Branch ID, CustID, date_open, Account_type, Balance)
+1. Create the tables with referential integrity.
+2. Draw the ER diagram for the same.
+3. Create an Index on primary key column of table Account
+create index Account_index on Account1(Account_no);
+show index from Account1;
+
+4. Create the view as Customer_Info displaying the customer details for age less than 45.
+create view Customer_info as select * from Customer where age<
+45;
+
+5. Update the View with open date as 16/4/2017
+
+6. Create a sequence on Branch able.
+
+7. Create synonym ‘Branch_info’ for branch table.

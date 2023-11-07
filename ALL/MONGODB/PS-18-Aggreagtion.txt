@@ -1,0 +1,32 @@
+Problem Statement 18 (AGGREGATION & INDEXING USING MONGODB)
+Create the Collection Student_Data( Student _ID, Student _Name, Department, Marks )and solve the
+following:
+
+1. Display all Students based on their departments along with an average Marks of a particular department.
+
+db.Student_Data.aggregate([{$group: {_id: "$Department",     Students: {$push: {Student_ID: "$Student_ID", Student_Name: "$Student_Name",Marks: "$Marks"}},Average_Marks: { $avg: "$Marks"}}},{$project: {_id: 0,                  Department: "$_
+id",Students: 1,Average_Marks: 1 }}]);
+
+2. Displays the number of Students associated along with a particular department.
+
+ db.Student_Data.aggregate([ { $group : { _id:"$Dept" , Number_of_Students : { $sum : 1 }} }, {$project: { Department : "$_id",Number_of_Students :1 , _id:0}}]);
+
+3. Display list of Students with the highest Marks in each Department in descending orderof Marks.
+
+db.Student_Data.aggregate([{$group:{_id:"$Dept",highestMarks:{$max:"$Marks"},students:{$push:{Student_ID:"$Student_ID",Student_Name:"$Student_Name",Marks:"$Marks"}}}},{$project:{Department:"$_id",_id:0,highestMarks:1,students:{$filter:{input:"$students",as:"student",cond:{$eq:["$$student.Marks","$highestMarks"]}}}}},{$unwind:"$students"},{$sort:{"highestMarks":-1}}]);
+
+4. Create an index on field Student_ID.
+
+db.Student_Data.createIndex({  Student_ID : 1 })
+
+5. Create an index on fields “Student_Name‘ and “Department”.
+
+db.Student_Data.createIndex({ Student_ID : 1 } ,{ Dept : 1 } )
+
+6. Drop an index on field Student_ID.
+
+db.Student_Data.dropIndex({  Student_ID : 1 })
+
+7. Drop an index on fields “Student_Name‘ and “Department”
+
+db.Student_Data.dropIndex({ Student_ID : 1 } ,{ Dept : 1 } )

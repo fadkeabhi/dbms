@@ -1,0 +1,33 @@
+Problem Statement 9 (Map Reduce) 
+Create collection for Student{roll_no, name, class, dept, aggregate_marks}. Write Map Reduce Functions for 
+following requirements. 
+
+1. Finding the total marks of students of “TE” class department-wise. 
+
+var mapFunction = function() {if (this.class === "TE") {emit(this.dept, this.aggregate_marks);}};
+var reduceFunction = function(key, values) {return Array.sum(values)};
+db.Student.mapReduce(mapFunction, reduceFunction, { out: "TE_TotalMarks" })
+db.TE_TotalMarks.find()
+
+2. Finding the highest marks of students of “SE” class department-wise. 
+
+var m = function(){
+if(this.class == "SE"){
+emit(this.dept, this.aggregate_marks);
+}
+}
+
+var r = function(key, values) {var max = values[0];for (var i = 1; i < values.length; i++) {if (values[i] > max) {max = values[i];}}return max;}
+
+db.Student.mapReduce(m,r,{out:"a2"})
+
+3. Find Average marks of students of “BE” class department-wise. 
+var m = function(){
+if(this.class == "BE"){
+emit(this.dept, this.aggregate_marks);
+}
+}
+
+var r = function(key, values) {
+    return Array.avg(values); 
+}

@@ -1,0 +1,69 @@
+Problem Statement 4 (Procedures / Functions)
+Consider following schema for Bank database.
+Account(Account_No, Cust_Name, Balance, NoOfYears)
+Earned_Interest(Account_No, Interest_Amt)
+
+1. Write a PL/SQL procedure for following requirement. Take as input Account_No and Interest Rate from User.
+Calculate the Interest_Amt as simple interest for the given Account_No and store it in Earned_Interest table.
+Display all the details of Earned_Interest Table.
+
+CREATE OR REPLACE PROCEDURE CalculateInterestAndDisplay(
+    p_Account_No IN Account.Account_No%TYPE,
+    p_Interest_Rate IN NUMBER
+) IS
+    v_Principal NUMBER;
+    v_Interest_Amt NUMBER;
+BEGIN
+    -- Get the current balance for the given Account_No
+    SELECT Balance INTO v_Principal
+    FROM Account
+    WHERE Account_No = p_Account_No;
+
+    -- Calculate the Interest_Amt using simple interest formula
+    v_Interest_Amt := (v_Principal * p_Interest_Rate) / 100;
+
+    -- Insert the calculated interest into the Earned_Interest table
+    INSERT INTO Earned_Interest(Account_No, Interest_Amt)
+    VALUES (p_Account_No, v_Interest_Amt);
+
+    -- Display all details from the Earned_Interest table
+    DBMS_OUTPUT.PUT_LINE('Interest calculated and stored in Earned_Interest table:');
+    FOR rec IN (SELECT * FROM Earned_Interest) LOOP
+        DBMS_OUTPUT.PUT_LINE('Account_No: ' || rec.Account_No || ', Interest_Amt: ' || rec.Interest_Amt);
+    END LOOP;
+END;
+/
+
+
+
+2. Write a PLSQL function to display all records from Account table having Balance greater than 50,000
+
+CREATE OR REPLACE FUNCTION GetHighBalanceAccounts
+RETURN SYS_REFCURSOR
+IS
+  cur SYS_REFCURSOR;
+BEGIN
+  OPEN cur FOR
+    SELECT Account_No, Cust_Name, Balance, NoOfYears
+    FROM Account
+    WHERE Balance > 50000;
+  RETURN cur;
+END;
+/
+
+
+DECLARE
+    AccountNumber Integer;
+    InterestRate Float;
+    InterestAmount Earned_Interest.Interest_Amt%TYPE;
+    Balance_Amount Account.Balance%TYPE;
+    Years Account.NoOfYears%TYPE; 
+BEGIN
+    AccountNumber:=:Enter_Account_number;
+    InterestRate:=:Enter_Interest_rate;
+    select Account_No,Balance,NoOfYears INTO AccountNumber,Balance_Amount,Years from Account where Account_No=AccountNumber;
+    InterestAmount := Balance_Amount*InterestRate*Years/100;
+    dbms_output.put_line('Total Interest Amount');
+    dbms_output.put_line(InterestAmount);
+    insert into Earned_Interest(Account_No, Interest_Amt) values(AccountNumber ,InterestAmount );
+END

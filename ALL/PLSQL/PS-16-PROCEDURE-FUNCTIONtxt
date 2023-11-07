@@ -1,0 +1,66 @@
+Problem Statement 16 (Procedures / Functions) 
+Employee( emp_id, dept_idemp_name, DoJ, salary, commission,job_title) 
+
+--create table Employee_procedure( emp_id int , dept_id int,emp_name varchar2(20), DoJ date, salary int, commission int,job_title varchar2(20));
+--describe Employee_procedure;
+
+1. Consider the schema given above. Keep the commission column empty initially. Write a Stored Procedure to 
+record the employee commission based on following conditions. If salary is more than 10000 then commission 
+is 0.4%, if Salary is less than 10000 but experience is more than 10 years then 0.35%, if salary is less than 3000 
+then commission is 0.25%. In the remaining cases commission is 0.15%. 
+
+CREATE OR REPLACE PROCEDURE calCommision
+AS
+commission number;
+commissionCalc number;
+experience number;
+BEGIN
+for row in (SELECT * FROM employee)
+LOOP
+experience := SYSDATE - row.DoJ;
+IF row.salary > 10000 THEN
+      commission := 0.4;
+    ELSIF experience > 10 THEN
+      commission := 0.35;
+    ELSIF row.salary < 3000 THEN
+      commission := 0.25;
+    ELSE
+      commission := 0.15;
+    END IF;
+
+commissionCalc := (row.salary * commission / 100);
+UPDATE employee SET commission = commissionCalc  WHERE emp_id = row.emp_id ;
+dbms_output.put_line(row.salary * commission / 100);
+END LOOP;
+END;
+
+
+BEGIN 
+calCommision();
+END;
+
+
+2. Write a PLSQL Function that takes department ID and returns the name of the manager of the department. 
+CREATE OR REPLACE FUNCTION retManagers 
+(deptId IN NUMBER)
+RETURN varchar2
+
+AS
+managerName varchar2(20);
+BEGIN 
+
+SELECT manager_name into managerName from managers WHERE dept_id = deptId ;
+
+RETURN managerName ;
+
+END;
+
+
+DECLARE
+managerName varchar2(20);
+deptId number;
+BEGIN
+deptId := :deptId; 
+managerName := retManagers(deptId );
+dbms_output.put_line(managerName );
+END;

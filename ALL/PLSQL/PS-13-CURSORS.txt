@@ -1,0 +1,75 @@
+Problem Statement 13 (Cursors) 
+Consider a table Employee with schema as Employee (Emp_id, Emp_Name,Salary).
+ 
+1. Write an explicit cursor to display records of all employees with salary greater than 50,000. 
+DECLARE
+CURSOR employee_cursor IS
+select Emp_id, Emp_Name,Salary from Employee 
+where Salary>50000;
+records_salary Employee.Salary%TYPE;
+records_id Employee.Emp_id%TYPE;
+records_name Employee.Emp_Name%TYPE;
+
+BEGIN
+OPEN employee_cursor;
+LOOP 
+ FETCH employee_cursor INTO records_id ,records_name ,records_salary ;
+ EXIT WHEN employee_cursor%NOTFOUND;
+     DBMS_OUTPUT.PUT_LINE(records_id||'  '||records_name||'  '||records_salary);
+END LOOP;
+ 
+CLOSE employee_cursor; 
+
+END;
+
+
+2. Write a PL/SQL block of code using Implicit Cursor that will display total number of tuples in Employee 
+table. 
+
+DECLARE
+  total_count NUMBER;
+
+BEGIN
+  -- Use an implicit cursor to get the count of tuples in the Employee table
+  SELECT COUNT(*) INTO total_count
+  FROM Employee;
+
+  -- Display the total count
+  DBMS_OUTPUT.PUT_LINE('Total number of tuples in the Employee table: ' || total_count);
+END;
+/
+
+3. Write a PL/SQL block of code using Parameterized Cursor that will display salary of employee id entered by 
+the user. 
+
+DECLARE
+  v_emp_id NUMBER;
+  v_emp_salary NUMBER;
+
+  -- Declare a parameterized cursor with a bind variable
+  CURSOR employee_cursor (p_emp_id NUMBER) IS
+    SELECT Salary
+    FROM Employee
+    WHERE Emp_id = p_emp_id;
+
+BEGIN
+  -- Prompt the user for the employee ID
+  v_emp_id := :Enter;
+
+  -- Open the cursor with the user-supplied employee ID
+  OPEN employee_cursor(v_emp_id);
+
+  -- Fetch the salary based on the entered employee ID
+  FETCH employee_cursor INTO v_emp_salary;
+
+  -- Check if the employee exists and display the salary
+  IF employee_cursor%FOUND THEN
+    DBMS_OUTPUT.PUT_LINE('Employee ID ' || v_emp_id || ' has a salary of ' || v_emp_salary);
+  ELSE
+    DBMS_OUTPUT.PUT_LINE('Employee ID ' || v_emp_id || ' not found.');
+  END IF;
+
+  -- Close the cursor
+  CLOSE employee_cursor;
+END;
+/

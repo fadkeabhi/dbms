@@ -1,0 +1,122 @@
+Consider the following schema for Products table. 
+Products(Product_id, Product_Name, Product_Type, Price) 
+
+1. Write a parameterized cursor to display all products in the given price range of price and type ‘Apparel’. 
+Hint: Take the user input for minimum and maximum price for price range. 
+
+DECLARE
+  -- Declare variables for user input
+  v_min_price NUMBER;
+  v_max_price NUMBER;
+  
+  -- Declare a cursor for fetching products
+  CURSOR product_cursor (min_price NUMBER, max_price NUMBER) IS
+    SELECT Product_id, Product_Name, Product_Type, Price
+    FROM Products
+    WHERE Price BETWEEN min_price AND max_price
+      AND Product_Type = 'Apparel';
+
+  -- Declare variables to store fetched data
+  v_product_id Products.Product_id%TYPE;
+  v_product_name Products.Product_Name%TYPE;
+  v_product_type Products.Product_Type%TYPE;
+  v_price Products.Price%TYPE;
+BEGIN
+  -- Prompt the user for input
+  --DBMS_OUTPUT.PUT('Enter the minimum price: ');
+  v_min_price :=:MINPRICE;
+  --DBMS_OUTPUT.PUT('Enter the maximum price: ');
+  v_max_price :=:MAXPRICE;
+
+  -- Open the cursor with user-supplied price range
+  OPEN product_cursor(v_min_price, v_max_price);
+
+  -- Fetch and display products within the specified price range and type
+  DBMS_OUTPUT.PUT_LINE('Products within the specified price range and type "Apparel":');
+  DBMS_OUTPUT.PUT_LINE('Product ID | Product Name | Product Type | Price');
+  
+  LOOP
+    FETCH product_cursor INTO v_product_id, v_product_name, v_product_type, v_price;
+    EXIT WHEN product_cursor%NOTFOUND;
+
+    -- Display product information
+    DBMS_OUTPUT.PUT_LINE(v_product_id || ' | ' || v_product_name || ' | ' || v_product_type || ' | ' || v_price);
+  END LOOP;
+
+  -- Close the cursor
+  CLOSE product_cursor;
+END;
+/
+
+DECLARE
+min_price NUMBER;
+max_price NUMBER;
+
+CURSOR palash( minimun1 NUMBER,maximum1 NUMBER)
+IS select Product_id, Product_Name, Product_Type, Price from Products where
+Product_Type = 'Apparel' AND Price BETWEEN min_price AND max_price;
+
+pro_id Products.Product_id%TYPE;
+pro_name Products.Product_name%TYPE;
+pro_type Products.Product_type%TYPE;
+pro_price Products.Price%TYPE;
+
+BEGIN
+    min_price:=:MINPRICE;
+    max_price:=:MAXPRICE;
+    
+    OPEN palash(min_price , max_price);
+
+    DBMS_OUTPUT.PUT_LINE('Products in the Specified price range are');
+    DBMS_OUTPUT.PUT_LINE('ProductID | ProductNAME | ProductTYPE | Price');
+
+    LOOP
+        FETCH palash INTO pro_id ,pro_name ,pro_type ,pro_price;
+        EXIT WHEN  palash%NOTFOUND;
+        DBMS_OUTPUT.PUT_LINE(pro_id||' '||pro_name||' '||pro_type||' '||pro_price);
+    END LOOP;
+
+    CLOSE palash;
+END;
+
+2. Write an explicit cursor to display information of all products with Price greater than 5000. 
+DECLARE
+CURSOR display IS 
+select Product_id, Product_Name, Product_Type, Price from Products 
+where Price > 5000;
+
+p_Product_id Products.Product_id%TYPE;
+p_Product_Name Products.Product_Name%TYPE;
+p_Product_Type Products.Product_Type%TYPE;
+p_Price  Products.Price%TYPE;
+
+BEGIN
+    OPEN display;
+        DBMS_OUTPUT.PUT_LINE('Displaying information of products with price greater than 5000');
+    LOOP 
+        FETCH display INTO p_Product_id ,p_Product_Name ,p_Product_Type ,p_Price;
+            DBMS_OUTPUT.PUT_LINE(p_Product_id||'  '||p_Product_Name||'  '||p_Product_Type||'  '||p_Price);
+        EXIT When display%NOTFOUND; 
+    END LOOP;
+    CLOSE display;
+
+END;
+
+3. Write an implicit cursor to display the number of records affected by the update operation incrementing Price 
+of all products by 1000. 
+
+DECLARE
+  v_rows_affected NUMBER;
+
+BEGIN
+  -- Increment the Price of all products by 1000
+  UPDATE Products
+  SET Price = Price + 1000;
+
+  -- Get the number of records affected by the update operation
+  v_rows_affected := SQL%ROWCOUNT;
+
+  -- Display the number of records affected
+  DBMS_OUTPUT.PUT_LINE('Number of records affected by the update operation: ' || v_rows_affected);
+END;
+/

@@ -1,0 +1,58 @@
+Problem Statement 15 (Map Reduce using MongoDB) 
+Create Book Collection with (Title, Author_name, Borrowed_status) as fields. Write Map Reduce Functions for 
+following requirements. 
+
+db.createCollection("Book")
+
+db.Book.insertMany([{Title: "The Immortals of Meluha",Author_name: "Amish Tripathi",Borrowed_status: true},{Title: "The Alchemist",Author_name: "Paulo Coelho"Borrowed_status: false},{Title: "Train to Pakistan", Author_name: "Khushwant Singh",Borrowed_status: true},
+  {
+    Title: "Midnight's Children",
+    Author_name: "Paulo Coelho",
+    Borrowed_status: false
+  },
+  {
+    Title: "Two States",
+    Author_name: "Chetan Bhagat",
+    Borrowed_status: true
+  },
+  {
+    Title: "The Guide",
+    Author_name: "R.K. Narayan",
+    Borrowed_status: false
+  }
+])
+
+
+1. Display Author wise list of books. 
+
+1
+// Map function to emit author as the key
+var mapFunction = function() {emit(this.Author_name, { Title: this.Title, Borrowed_status: this.Borrowed_status });};
+
+// Reduce function to group books by author
+var reduceFunction = function(author, books) {var result = { Books: [] };books.forEach(function(book) {result.Books.push(book);});return result;};
+
+// Run the map-reduce operation for author-wise list of books
+db.Book.mapReduce(mapFunction, reduceFunction, {out: "AuthorWiseBooks"});
+
+// Display the results
+db.AuthorWiseBooks.find();
+
+// Clear the temporary collection for future map-reduce operations
+db.AuthorWiseBooks.drop();
+
+2. Display Author wise list of books having Borrowed status as “True”. 
+
+// Map function to emit author as the key for books with Borrowed_status as "True"
+var mapFunction = function() {if (this.Borrowed_status === true) {emit(this.Author_name, { Title: this.Title, Borrowed_status: this.Borrowed_status });}};
+
+// Run the map-reduce operation for author-wise list of borrowed books
+db.Book.mapReduce(mapFunction, reduceFunction, {out: "AuthorWiseBorrowedBooks"});
+
+// Display the results
+db.AuthorWiseBorrowedBooks.find();
+
+// Clear the temporary collection for future map-reduce operations
+db.AuthorWiseBorrowedBooks.drop();
+
+3. Display Author wise list of books having price greater than 300. 

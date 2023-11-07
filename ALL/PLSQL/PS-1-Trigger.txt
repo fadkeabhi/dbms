@@ -1,0 +1,55 @@
+Problem Statement 1 (Triggers) 
+Employee(emp_id, emp_name, salary, designation) 
+Salary_Backup(emp_id, old_salary, new_salary, salary_difference) 
+
+create table Employee_trig(emp_id int , emp_name varchar2(20), salary float, designation varchar2(20)); 
+create table Salary_Backup_trig(emp_id int, old_salary int, new_salary int, salary_difference int);
+
+INSERT INTO Employee_trig (emp_id, emp_name, salary, designation) VALUES (1, 'John Smith', 50000, 'Manager');
+INSERT INTO Employee_trig (emp_id, emp_name, salary, designation) VALUES (2, 'Jane Doe', 60000, 'Manager');
+INSERT INTO Employee_trig (emp_id, emp_name, salary, designation) VALUES (3, 'Bob Johnson', 45000, 'Clerk');
+INSERT INTO Employee_trig (emp_id, emp_name, salary, designation) VALUES (4, 'Alice Brown', 55000, 'Clerk');
+INSERT INTO Employee_trig (emp_id, emp_name, salary, designation) VALUES (5, 'Michael Wilson', 75000, 'CEO');
+INSERT INTO Employee_trig (emp_id, emp_name, salary, designation) VALUES (6, 'Emily Davis', 48000, 'Clerk');
+INSERT INTO Employee_trig (emp_id, emp_name, salary, designation) VALUES (7, 'David Lee', 65000, 'Manager');
+INSERT INTO Employee_trig (emp_id, emp_name, salary, designation) VALUES (8, 'Karen Miller', 70000, 'Manager');
+INSERT INTO Employee_trig (emp_id, emp_name, salary, designation) VALUES (9, 'Richard Smith', 60000, 'Analyst');
+INSERT INTO Employee_trig (emp_id, emp_name, salary, designation) VALUES (10, 'Samantha Taylor', 80000, 'Analyst');
+
+
+1. Create a Trigger to record salary change of the employee. Whenever salary is updated insert the details in 
+Salary_Backup table. 
+
+CREATE OR REPLACE TRIGGER Tri_emp 
+AFTER UPDATE ON Employee_trig
+FOR EACH ROW
+BEGIN
+    IF :NEW.salary <> :OLD.salary THEN
+    INSERT INTO Salary_Backup(emp_id, old_salary, new_salary, salary_difference) 
+    VALUES(:OLD.emp_id,:OLD.salary,:NEW.salary,(:NEW.salary-:OLD.salary));
+    END IF;
+END;
+
+
+update Employee_trig set salary=200 where emp_id=1;
+
+select * from Salary_Backup;
+
+Create a Trigger that will prevent deleting the employee record having designation as CEO.
+
+CREATE OR REPLACE TRIGGER preventCEOBHAIDelete
+BEFORE DELETE ON Employee_trig
+FOR EACH ROW
+BEGIN
+IF :OLD.designation ='CEO' THEN
+RAISE_APPLICATION_ERROR(-20001,'CEO can not be deleted');
+END IF;
+END; 
+
+delete from Employee_trig where designation='CEO';
+
+ORA-20001: CEO can not be deleted
+ORA-06512: at "ADITYA.PREVENTCEOBHAIDELETE", line 3
+ORA-04088: error during execution of trigger 'ADITYA.PREVENTCEOBHAIDELETE'
+
+1. delete from Employee_trig where designation='CEO';

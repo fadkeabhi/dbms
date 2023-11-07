@@ -1,0 +1,31 @@
+Problem Statement 20 (DDL USING MYSQL)
+Create following tables using a given schema and insert appropriate data into the same:
+Customer (CustID, Name, Cust_Address, Phone_no, Email_ID, Age)
+Branch (Branch ID, Branch_Name, Address)
+Account (Account_no, Branch ID, CustID, open_date, Account_type, Balance)
+
+1. Create the tables with referential integrity.
+2. Draw the ER diagram for the same.
+3. Create a View as Saving account displaying the customer details with the open date as 16/8/2018.
+
+create view Saving_acount as select * from Account where Date_
+open = '2018-8-16';
+
+4. Update the View with Cust_Address as Pune for CustID =103.
+
+
+
+5. Create a View as Loan account displaying the customer details with the open date as 16/2/2018.
+
+
+6. Create an Index on primary key column of table Customer.
+
+
+7. Create an Index on primary key column of table Branch.
+
+
+8. Create a sequence on Customer Table.
+
+
+
+9. Create synonym ‘Cust_info’ for branch table

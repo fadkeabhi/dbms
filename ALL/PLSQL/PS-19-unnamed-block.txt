@@ -1,0 +1,42 @@
+Problem Statement 19 (Unnamed Block)
+Employee( emp_id, dept_idemp_name, DoJ, salary, commission,job_title)
+Salary_Increment(emp_id, new_salary)
+Consider the schema given above. Write a PLSQL Unnamed Block of code to increase the salary of employee
+115 based on the following conditions:
+Accept emp_id from user. If experience of employee is more than 10 years, increase salary by 20%. If experience
+is greater than 5 years, increase salary by 10% Otherwise 5%. (Hint: Find the years of experience from Date of
+Joining (DoJ)). Store the incremented salary in Salary_Increment table.
+Also handle the exception by named exception handler or user defined exception handler
+
+DECLARE
+ employeeID Employee.emp_id%TYPE;
+ employeeSalary Employee.Salary%TYPE;
+ employeeExperience integer;
+ userEmpID integer;
+ incremented_salary Employee.Salary%TYPE;
+BEGIN
+    userEmpID:=:Enter_Employee_ID;
+    select emp_id , Salary, TRUNC(MONTHS_BETWEEN(SYSDATE, DoJ) / 12 ) INTO employeeID , employeeSalary , employeeExperience from Employee where emp_id=userEmpID;
+    dbms_output.put_line('Current Salary of Employee : ');
+    dbms_output.put_line(employeeSalary);
+    dbms_output.put_line('Experience of Employee : ');
+    dbms_output.put_line(employeeExperience);
+    IF employeeExperience >= 10 THEN
+        incremented_salary := employeeSalary * 1.2;
+        dbms_output.put_line('Salary incremented by 20% ');
+    ELSIF employeeExperience >= 5 AND employeeExperience < 10 THEN
+        incremented_salary := employeeSalary * 1.1;
+        dbms_output.put_line('Salary incremented by 10% ');
+    ELSE
+        incremented_salary := employeeSalary * 1.05;
+        dbms_output.put_line('Salary incremented by 5% ');
+    END IF;
+        dbms_output.put_line('New Salary');
+        dbms_output.put_line(incremented_salary);
+    insert into Salary(emp_id , new_salary) values(userEmpID , incremented_salary);
+    EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+      DBMS_OUTPUT.PUT_LINE('Employee not found.');
+    WHEN OTHERS THEN
+      DBMS_OUTPUT.PUT_LINE('An unexpected error occurred.');
+END

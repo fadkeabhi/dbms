@@ -1,0 +1,34 @@
+Problem Statement 8 (DML USING MYSQL)
+Create following tables using a given schema and insert appropriate data into the same:
+Customer (CustID, Name, Cust_Address, Phone_no, Email_ID, Age)
+Branch (Branch ID, Branch_Name, Address)
+Account (Account_no, Branch ID, CustID, date_open, Account_type, Balance)
+
+1. Modify the size of column “Email_ID” to 20 in Customer table.
+
+alter table Customer modify Email_ID varchar(20);
+
+2. Change the column “Email_ID” to Not Null in Customer table.
+
+alter table Customer modify Email_ID varchar(20) NOT NULL;
+
+3. Display the total customers with the balance >50, 000 Rs.
+
+select count(Account_no) from Account where Balance>50000;
+
+4. Display average balance for account type=”Saving Account”.
+
+select avg(Balance) from Account where Account_type = "Saving";
+
+5. Display the customer details that lives in Pune or name starts with ’A’.
+
+select * from Customer where Cust_Address = "Pune" or Nam
+e = "A%";
+
+6. Create a table Saving_Account with (Account_no, Branch ID, CustID, date_open, Balance) using Account Table.
+
+create index Saving_Account on Account( Account_no , Branch_ID , CustID , Date_open , Balance );
+
+7. Display the customer details Age wise with balance>=20,000Rs
+
+select * from Account left join Customer on Account.CustID = Customer.CustID where Balance >=20000;

@@ -1,0 +1,35 @@
+Problem Statement 17 (DML USING MYSQL)
+Create following tables using a given schema and insert appropriate data into the same:
+Customer (CustID, Name, Cust_Address, Phone_no, Age)
+Branch (Branch ID, Branch_Name, Address)
+Account (Account_no, Branch ID, CustID, date_open, Account_type, Balance) 
+
+1. Add the column “Email_Address” in Customer table.
+
+alter table Customer add Email_address varchar(10);
+
+2. Change the name of column “Email_Address” to “Email_ID” in Customer table.
+
+alter table Customer change Email_address Email_iDD int;
+
+3. Display the customer details with highest balance in the account.
+
+select * from Customer c inner join Account a on c.CustID=a.Cu
+stID where Balance = (select max(Balance) from Account);
+
+4. Display the customer details with lowest balance for account type= “Saving Account”.
+
+ select * from Customer c inner join Account a on c.CustID=a.CustID where Balance = (select min(Balance) from Account where Account_type = "Saving Account");
+
+5. Display the customer details that live in Pune and have age greater than 35.
+
+ select * from Customer where Cust_Address = "Pune" and age > 3
+5;
+
+6. Display the Cust_ID, Name and Age of the customer in ascending order of their age.
+
+select CustID , Name , age from Customer order by age asc;
+
+7. Display the Name and Branch ID of the customer group by the Account_type.
+
+select c.Name , b.Branch_ID from Account inner join Branch b on Account.Branch_ID=b.Branch_ID inner join Customer c on Account.CustID=c.CustID  order by Account.Account_type;
